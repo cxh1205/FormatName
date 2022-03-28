@@ -1,218 +1,242 @@
-#! python3
-#coding=utf-8
-import win32api, openpyxl, os, re, traceback
+from flask import Flask, request, jsonify
+from datetime import timedelta
+import webbrowser, json, openpyxl, os, re
+
+import flask
+
+app = Flask(__name__, static_url_path="")
+app.debug = False
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
+
+HOST_PAGE = "http://localhost:40115"
+HOST = "127.0.0.1"
+PORT = 40115
 
 
-BASIC = 'Class Tool v1.0'
-file_name = '配置文件.jitang'
+class Excel_List:
+    def __init__(self, path):
+        self.path = path.strip('"').strip("'")
+        self.sheet = openpyxl.load_workbook(self.path, data_only=True).active
 
+    def is_correct_excel(self):
+        for i in range(1, 1000):
+            if self.sheet.cell(i, 2).value != None:
+                self.find_line_range()
+                self.find_col_range()
+                return 1
+        return 0
 
-def set():
-    excel_dir = input('请输入数据列表位置：')
-    flag_1 = input_int('是否输入基础信息？')
-    keys, values = [],[]
-    while True:
-        if flag_1:
-            keys += [input('请输入基础信息名称：')]
-            values += [input('请输入基础信息的值：')]
+    def find_line_range(self):
+        for i in range(1, 5):
+            if self.sheet.cell(i, 2).value != None:
+                break
+        self.first_line = i
+        while 1:
+            if self.sheet.cell(i, 1).value == None:
+                break
+            i += 1
+        self.last_line = i - 1
+
+    def find_col_range(self):
+        self.first_col = 1
+        i = 1
+        while 1:
+            if self.sheet.cell(self.first_line, i).value == None:
+                break
+            i += 1
+        self.last_col = i - 1
+
+    def return_col_data(self, col_num):
+        col = {}
+        col["key"] = self.sheet.cell(self.first_line, col_num).value
+        col["values"] = [
+            self.sheet.cell(i, col_num).value
+            for i in range(self.first_line + 1, self.last_line + 1)
+        ]
+        col["delta"] = len(col["values"]) - len(set(col["values"]))
+        if col["delta"] > 2:
+            col["isKeyWord"] = False
+            col["reason"] = "该项不适合做关键字，因为至少有%d个重复项" % col["delta"]
         else:
-            break
-        flag_1 = input_int('是否继续输入基础信息？')
-    setting = [BASIC,  '0,,0,,0,,0', ','.join(keys), ','.join(values)] + [','.join(i) for i in read_excel(excel_dir)]
-    save_setting(setting)
-    print('配置信息录入完成\n')
+            col["isKeyWord"] = True
+            col["reason"] = "该项适合做关键字"
+        return col
 
+    def return_excel_data(self):
+        return [
+            self.return_col_data(x) for x in range(self.first_col, self.last_col + 1)
+        ]
 
-def save_setting(setting, end = '\n'):
-    with open(file_name, 'w', encoding = 'utf-8') as f:
-            for line in setting:
-               f.write(line + end)
-    win32api.SetFileAttributes('配置文件.jitang', 6)
-
-                
-def read_excel(file_dir):
-    file_dir = file_dir.strip('"').strip("'")
-    sheet = openpyxl.load_workbook(file_dir).active
-    first_line = 1
-    while True:
-        if sheet.cell(first_line, 2).value == None:
-            first_line += 1
-        else:
-            break
-    n = 1
-    while True:
-        if sheet.cell(first_line, n).value == None:
-            n -= 1
-            break
-        n += 1
-    excel_list = []
-    for col_num in range(1, n+1):
-        excel_list += [[]]
-        row_num = first_line
-        while True:
-            if sheet.cell(row_num, col_num).value == None:
-                break
-            excel_list[col_num - 1] += [str(sheet.cell(row_num, col_num).value)]
-            row_num += 1
-    return excel_list
-            
-        
-def read_setting():
-    with open(file_name, 'r' ,encoding = 'utf-8') as f:
-        setting = f.readlines()[1:]
-    setting = [i.rstrip('\n').split(',') for i in setting]
-    last_choice = setting[0]
-    for i in range(4):
-        last_choice[2*i] = int(last_choice[2*i])
-    keys = [''] + [i for i in setting[1]] + [setting[i][0] for i in range(3, len(setting))]
-    keys_num = len(setting[1])
-    values = [i for i in setting[2]]
-    info_list = [[setting[i][j] for i in range(3, len(setting))] for j in range(1, len(setting[3]))]
-    name = []
-    for i in range(4):
-        name += keys[last_choice[2*i]]
-        if i<3:
-            name += last_choice[2*i+1]
-    if name:
-        print('上次的命名格式为：' + ''.join(name) + '.xxx')
-    if setting[1][0]:
-        print('现在拥有的选项为：' + ','.join(keys[1:]))
-    else:
-        print('现在拥有的选项为：' + ','.join(keys[2:]))
-        keys_num = 0
-        del keys[1]
-    return {'last_choice':last_choice, 'keys':keys, 'keys_num':keys_num, 'values':values, 'info':info_list}
-        
-
-def input_int(question):
-    while True:
-        try:
-            num = int(input(question + '是输1，否输0：'))
-            if num == 1 or num == 0:
-                break
-            else:
-                print('只能输入0或1！', end = ' ')
-        except:
-            print('请输入0或1！', end = ' ')
-    return num
-
-
-def start():
-    while True:
-        try:
-            my_dir = os.getcwd()
-            with open(file_name, 'r', encoding = 'utf-8') as f:
-                if f.readlines()[0].rstrip('\n') != BASIC:#配置文件版本不对就重新设置
-                    os.remove(file_name)
-                    1/0
-            dic = read_setting()
-            flag = input_int('是否需要重新配置信息？')
-            if flag:
-                1/0
-            flag1 = 0
-            for i in dic['last_choice']:
-                if i:
-                    flag1 = 1
-                    break
-            if flag1:
-                flag = input_int('是否使用上次命名格式？')
-            else:
-                flag = 0
-            if flag:
-                pass
-            else:
-                while True:
-                    flag1 = input_int('是否统一分隔符？')
-                    if flag1:
-                        split = input('分隔符统一为：')
-                        dic['last_choice'][1] = dic['last_choice'][3] = dic['last_choice'][5] = split
-                    print('\n接下来将根据以下列表输入' + str(7-flag1*3) + '次信息')
-                    print('不输入请按0')
-                    for i in range(1, len(dic['keys'])):
-                        print('输入 %s 请按%d'%(dic['keys'][i],i))
-                    print()
-                    for i in range(4):
-                        dic['last_choice'][2*i] = int(input('请输入序号：'))
-                        if not flag1 and i<3:
-                            dic['last_choice'][2*i+1] = input('请输入分隔符：')
-                    for i in range(1, 4):
-                        if dic['last_choice'][2*i] == 0:
-                            dic['last_choice'][2*i-1] = ''
-                    name = []
-                    for i in range(4):
-                        name += dic['keys'][dic['last_choice'][2*i]]
-                        if i<3:
-                            name += dic['last_choice'][2*i+1]
-                    print('命名格式为：' + ''.join(name) + '.xxx')
-                    flag2 = input_int('对命名格式是否满意？')
-                    if flag2:
-                        with open(file_name, 'r', encoding = 'utf-8') as f:
-                            setting = f.readlines()
-                        last_choice = dic['last_choice'][0:]
-                        for i in range(4):
-                            last_choice[2*i] = str(last_choice[2*i])
-                        setting[1] = ','.join(last_choice) + '\n'
-                        save_setting(setting, end = '')
-                        break
-            file_dir = input('请输入要重新命名的文件夹路径：').strip('"').strip("'")
-            main(file_dir, dic)
-            print('重命名完成！\n')
-            flag = input_int('是否继续使用？')
-            if flag:
-                os.chdir(my_dir)
-                print()
-            else:
-                break
-        except ZeroDivisionError:
-            set()
-        except FileNotFoundError:
-            set()
-        except Exception as e:
-            print('\n' + '='*40)
-            traceback.print_exc()
-            print('='*40)
-            input('↑↑↑↑↑请截图上面的错误反馈给我，谢谢↑↑↑↑↑\n截图后请复制进入https://class-tool.jitang.xyz添加我微信，向我发送截图\n\n如需继续使用请更改配置或更改重命名的文件夹路径\n请按回车继续……')
+    def show_excel(self):
+        sheet = self.return_excel_data()
+        for i in sheet:
+            print(i["key"], end="\t")
+        print()
+        for j in range(self.last_line - self.first_line):
+            for i in sheet:
+                print(i["values"][j], end="\t")
             print()
-        
+        print(j)
 
 
-def main(file_dir, dic):
-    map = [0 for i in range(len(dic['info']))]
-    os.chdir(r'%s'% file_dir)
-    dir_list = os.listdir()
-    last_choice = [dic['last_choice'][2*i] for i in range(4)]
-    for file_name in dir_list:
-        for i in range(len(dic['info'])):
-            for j in last_choice:
-                if j > dic['keys_num']:
-                    if re.search(r'%s'%dic['info'][i][j-1-dic['keys_num']], file_name):
-                        try:
-                            last_name = re.findall(r'\.[^\.]+$', file_name)[0]
-                            map[i] += 1
-                            if map[i] >= 2:
-                                last_name = '(%d)'%map[i] + last_name
-                            os.rename(file_name, name(dic, i) + last_name)
-                        except:
-                            pass
-                        break
-    for i in range(len(map)):
-        if map[i] > 1:
-            print('%s 交重复了' % name(dic, i))
-    for i in range(len(map)):
-        if map[i] == 0:
-            print('%s 没交' % name(dic, i))
-        
+def read_json(path):
+    current_path=os.getcwd()
+    os.chdir(MY_PATH)
+    with open(path, "r", encoding="utf-8-sig") as f:
+        t = json.loads(f.read())
+    os.chdir(current_path)
+    return t
 
-def name(dic, info_index):
-    name = []
-    for k in range(4):
-        if 0 < dic['last_choice'][2*k] <= dic['keys_num']:
-            name += dic['values'][dic['last_choice'][2*k]-1]
-        elif dic['last_choice'][2*k] > dic['keys_num']:
-            name += dic['info'][info_index][dic['last_choice'][2*k]-dic['keys_num']-1]
-        if k<3:
-            name += dic['last_choice'][2*k+1]
-    return ''.join(name)
-    
 
-start()
+def write_json(path, obj):
+    current_path=os.getcwd()
+    os.chdir(MY_PATH)
+    j = json.dumps(obj, ensure_ascii=False)
+    with open(path, "w", encoding="utf-8-sig") as f:
+        f.write(j)
+    os.chdir(current_path)
+    return j
+
+
+@app.route("/", methods=["get"])
+def index():
+    if config["data"]:
+        return app.send_static_file("index.html")
+    else:
+        return flask.redirect("/GetExcel")
+
+
+@app.route("/GetExcel", methods=["get"])
+def get_excel():
+    return app.send_static_file("get_excel.html")
+
+
+@app.route("/GetKeyWord", methods=["get"])
+def get_key_word():
+    return app.send_static_file("get_key_word.html")
+
+
+@app.route("/FormatName", methods=["get"])
+def format_name():
+    return app.send_static_file("format_name.html")
+
+
+@app.route("/Analysis", methods=["get"])
+def analysis():
+    return app.send_static_file("analysis.html")
+
+
+@app.route("/SubmitExcelPath", methods=["post"])
+def submit_excel_path():
+    path = json.loads(request.data.decode())["path"]
+    sheet = Excel_List(path)
+    if sheet.is_correct_excel():
+        config["data"] = sheet.return_excel_data()
+        return json.dumps({"code": 0, "msg": "读取成功"}, ensure_ascii=False)
+    else:
+        return json.dumps({"code": 1, "msg": "文件不规范"}, ensure_ascii=False)
+
+
+@app.route("/SubmitData", methods=["post"])
+def submit_data():
+    config["data"] = json.loads(request.data.decode())
+    write_json("config.json", config)
+    return jsonify({"code": 0, "msg": "上传成功"})
+
+
+# 接收的参数为
+# "path": 文件夹路径
+# "execute": 命名列表[,,,'.xxx']
+@app.route("/SubmitExecute", methods=["post"])
+def submit_execute():
+    a = json.loads(request.data.decode())
+    execute.update(a)
+    return_old_and_new_name_compare()
+    return jsonify({"code": 0, "msg": "提交成功"})
+
+
+@app.route("/Rename", methods=["post"])
+def Rename():
+    for i in execute['list']:
+        os.rename(i['old'], i['new'])
+    return jsonify({"code": 0, "msg": "改名成功"})
+
+
+@app.route("/GetData", methods=["post"])
+def get_data():
+    return json.dumps(config["data"], ensure_ascii=False)
+
+
+@app.route("/GetExecute", methods=["post"])
+def get_execute():
+    return jsonify({'map':execute['map'], 'list':execute['list'], 'new':execute['new']})
+
+
+@app.route("/show", methods=["get"])
+def show():
+    return json.dumps(config, ensure_ascii=False)
+
+
+def return_old_and_new_name_compare():
+    os.chdir(execute["path"])
+    execute["old"] = [x for x in os.listdir() if not os.path.isdir(x)]
+    execute["data"] = [
+        x for x in sorted(config["data"], key=lambda x: x["delta"]) if x["isKeyWord"]
+    ]
+    return_new_name_list()
+    find_new_name()
+
+
+def return_new_name_list():
+    new_name_list = []
+    for i in range(len(config["data"][0]["values"])):
+        name = ""
+        for j in execute["execute"][:-1]:
+            if type(j) == int:
+                name += str(config["data"][j]["values"][i])
+            elif type(j)==type(None):
+                name += ""
+            else:
+                name += str(j)
+        new_name_list += [name]
+    execute["new"] = new_name_list
+
+
+def find_new_name():
+    execute["map"] = [0 for i in config["data"][0]["values"]]
+    name_list = []
+    for i in range(len(execute["old"])):  # 遍历旧名字，i为旧名字的序数
+        flag = 0
+        last_name = return_last_name(execute["old"][i])
+        for j in execute["data"]:  # 遍历所有关键字，j为关键字的键值对
+            for k in range(len(j["values"])):  # 遍历该关键字的值列表，k为值的序数
+                # if not execute['map'][k]:#只要匹配到了一次就不匹配下一个关键字
+                if re.search(str(j["values"][k]), execute["old"][i]):  # 在旧名字里匹配关键字
+                    if execute["map"][k] > 0:
+                        new_name = (
+                            execute["new"][k] + "(%s)" % execute["map"][k] + last_name
+                        )
+                    else:
+                        new_name = execute["new"][k] + last_name
+                    name_list += [{"old": execute["old"][i], "new": new_name}]
+                    execute["map"][k] += 1
+                    flag = 1  # 找到新名字以后，不需要匹配下一个关键字了
+                    break
+            if flag:
+                break
+    execute["list"] = name_list
+    return name_list
+
+
+def return_last_name(file_name):
+    return re.findall(r"\.[^\.]+$", file_name)[0]
+
+
+if __name__ == "__main__":
+    MY_PATH=os.getcwd()
+    config = read_json("config.json")
+    execute = {}
+    print("version:", config["version"])
+    print(MY_PATH)
+    webbrowser.open_new(HOST_PAGE)
+    app.run(host=HOST, port=PORT)

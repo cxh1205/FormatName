@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <title>3</title>
+    <script src="vue.global.prod.js"></script>
+    <script src="axios.min.js"></script>
+    <style>
+        .button {
+            background: #1f9eff;
+            box-shadow: 1px 1px 2px #1a86d9,
+                -1px -1px 2px #24b6ff;
+            width: 2em;
+            height: auto;
+            margin: 0.5em;
+            padding: 0.5em;
+        }
+    </style>
+
+</head>
+<table>
+    <tr>
+        <th style="border:1px solid #000;">旧名字</th>
+        <th style="border:1px solid #000;">新名字</th>
+    </tr>
+    <tr v-for="name in list">
+        <td style="border:1px solid #000;">{{name['old']}}</td>
+        <td style="border:1px solid #000;">{{name['new']}}</td>
+    </tr>
+
+</table>
+<table>
+    <tr>
+        <th style="border:1px solid #000;">没交</th>
+        <th style="border:1px solid #000;">多交</th>
+    </tr>
+    <tr v-for="i in range(0, none.length>remain.length?none.length:remain.length)">
+        <td style="border:1px solid #000;" @click="mes=none[i];copy()">{{none[i]}}</td>
+        <td style="border:1px solid #000;" @click="mes=remain[i];copy()">{{remain[i]}}</td>
+    </tr>
+</table>
+<div @click="submit" class="button">改名</div>
+
+<body>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    list: [],
+                    new: [],
+                    map: [],
+                    none: [],
+                    remain: [],
+                    mes: ''
+                }
+            },
+            methods: {
+                range(start, stop, step = 1) {
+                    return Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
+                },
+                test() {
+                    axios.post("GetExecute")
+                        .then((res) => {
+                            var data = res.data;
+                            this.list = res.data['list']
+                            this.map = res.data['map']
+                            this.new = res.data['new']
+                            for (i in this.range(0, this.map.length)) {
+                                if (this.map[i] == 0) {
+                                    this.none.push(this.new[i])
+                                } else if (this.map[i] > 1) {
+                                    this.remain.push(this.new[i])
+                                }
+                            }
+                            console.log(this.none, this.remain)
+                        })
+                },
+                copy() {
+                    //创建input标签
+                    var input = document.createElement('input')
+                    //将input的值设置为需要复制的内容
+                    input.value = this.mes;
+                    //添加input标签
+                    document.body.appendChild(input)
+                    //选中input标签
+                    input.select()
+                    //执行复制
+                    document.execCommand('copy')
+                    //成功提示信息
+                    alert('复制成功')
+                    //移除input标签
+                    document.body.removeChild(input)
+                },
+                submit() {
+                    axios.post('Rename').then((res) => {
+                        console.log(res.data)
+                        alert(res.data['msg'])
+                        window.location.href = "http://localhost:40115/"
+                    })
+                },
+            },
+            created() {
+                this.test()
+            }
+        }).mount('body')
+    </script>
+</body>
+
+</html>
