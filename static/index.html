@@ -112,7 +112,10 @@
                     }).then((res) => {
                         console.log(res.data)
                         alert(res.data['msg'])
-                        window.location.href = "http://localhost:40115/Analysis"
+                        if(res.data['code']==0){
+                            window.location.href = "http://localhost:40115/Analysis"
+                        }
+                        
                     })
                 },
                 reset() {

@@ -22,30 +22,32 @@
     </style>
 
 </head>
-<table>
-    <tr>
-        <th style="border:1px solid #000;">旧名字</th>
-        <th style="border:1px solid #000;">新名字</th>
-    </tr>
-    <tr v-for="name in list">
-        <td style="border:1px solid #000;">{{name['old']}}</td>
-        <td style="border:1px solid #000;">{{name['new']}}</td>
-    </tr>
 
-</table>
-<table>
-    <tr>
-        <th style="border:1px solid #000;">没交</th>
-        <th style="border:1px solid #000;">多交</th>
-    </tr>
-    <tr v-for="i in range(0, none.length>remain.length?none.length:remain.length)">
-        <td style="border:1px solid #000;" @click="mes=none[i];copy()">{{none[i]}}</td>
-        <td style="border:1px solid #000;" @click="mes=remain[i];copy()">{{remain[i]}}</td>
-    </tr>
-</table>
-<div @click="submit" class="button">改名</div>
 
 <body>
+    <table>
+        <tr>
+            <th style="border:1px solid #000;">旧名字</th>
+            <th style="border:1px solid #000;">新名字</th>
+        </tr>
+        <tr v-for="name in list">
+            <td style="border:1px solid #000;">{{name['old']}}</td>
+            <td style="border:1px solid #000;">{{name['new']}}</td>
+        </tr>
+    
+    </table>
+    <table>
+        <tr>
+            <th style="border:1px solid #000;">没交</th>
+            <th style="border:1px solid #000;">多交</th>
+        </tr>
+        <tr v-for="i in range(0, none.length>remain.length?none.length:remain.length)">
+            <td style="border:1px solid #000;" @click="mes=none[i];copy()">{{none[i]}}</td>
+            <td style="border:1px solid #000;" @click="mes=remain[i];copy()">{{remain[i]}}</td>
+        </tr>
+    </table>
+    <div @click="submit" class="button">改名</div>
+    <div @click="back" class="button">返回</div>
     <script>
         Vue.createApp({
             data() {
@@ -99,9 +101,11 @@
                     axios.post('Rename').then((res) => {
                         console.log(res.data)
                         alert(res.data['msg'])
-                        window.location.href = "http://localhost:40115/"
                     })
                 },
+                back(){
+                    history.back(-1)
+                }
             },
             created() {
                 this.test()
