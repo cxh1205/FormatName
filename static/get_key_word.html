@@ -27,7 +27,7 @@
 
 <body>
     <table>
-        <div @click="window.history.go(-1)" class="button">返回</div>
+        <div @click="back" class="button">返回</div>
         <div @click="submit" class="button">提交</div>
         <tr>
             <th v-for="key in emmm" style="border:1px solid #000" :class="{yes:key['isKeyWord']}" :title="key['reason']" @click="key['isKeyWord']=!key['isKeyWord']">{{key['key']}}</th>
@@ -63,6 +63,9 @@
                             alert(res.data['msg'])
                             window.location.href=window.location.origin+":40115/"
                         })
+                },
+                back(){
+                    history.back(-1)
                 }
 
             },

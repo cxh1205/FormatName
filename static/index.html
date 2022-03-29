@@ -113,7 +113,11 @@
                     }).then((res) => {
                         console.log(res.data)
                         alert(res.data['msg'])
-                        window.location.href = window.location.origin+"/Analysis"
+                        
+                        if(res.data['code']==0){
+                            window.location.href = window.location.origin+"/Analysis"
+                        }
+                        
                     })
                 },
                 reset() {
