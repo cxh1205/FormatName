@@ -11,12 +11,12 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION='v1.0.0'
+VERSION = "v1.0.0"
 
 
 class Excel_List:
     def __init__(self, path):
-        self.path = path.strip('"').strip("'")
+        self.path = path.strip('"')
         self.sheet = openpyxl.load_workbook(self.path, data_only=True).active
 
     def is_correct_excel(self):
@@ -81,7 +81,7 @@ class Excel_List:
 
 
 def read_json(path):
-    current_path=os.getcwd()
+    current_path = os.getcwd()
     os.chdir(MY_PATH)
     with open(path, "r", encoding="utf-8-sig") as f:
         t = json.loads(f.read())
@@ -90,7 +90,7 @@ def read_json(path):
 
 
 def write_json(path, obj):
-    current_path=os.getcwd()
+    current_path = os.getcwd()
     os.chdir(MY_PATH)
     j = json.dumps(obj, ensure_ascii=False)
     with open(path, "w", encoding="utf-8-sig") as f:
@@ -129,11 +129,16 @@ def analysis():
 
 @app.route("/SubmitExcelPath", methods=["post"])
 def submit_excel_path():
-    path = json.loads(request.data.decode())["path"].strip('"').strip("'")
+    path = os.path.normpath(json.loads(request.data.decode())["path"].strip('"'))
     if not os.path.exists(path):
         return jsonify({"code": 1, "msg": "提交失败，文件不存在"})
-    if not re.search('^[A-Za-z]:\\\\([^|><?*\":\\/]*\\\\)*[^|><?*\":\\/]*\.((xlsx)|(xlsm)|(xltx)|(xltm))$', path):
-        return jsonify({"code": 2, "msg": "提交失败，不能读取该格式文件，请选择(.xlsx)(.xlsm)(.xltx)(.xltm)文件"})
+    if not re.search(
+        '^[A-Za-z]:\\\\([^|><?*":\\/]*\\\\)*[^|><?*":\\/]*\.((xlsx)|(xlsm)|(xltx)|(xltm))$',
+        path,
+    ):
+        return jsonify(
+            {"code": 2, "msg": "提交失败，不能读取该格式文件，请选择(.xlsx)(.xlsm)(.xltx)(.xltm)文件"}
+        )
     sheet = Excel_List(path)
     if sheet.is_correct_excel():
         config["data"] = sheet.return_excel_data()
@@ -155,48 +160,23 @@ def submit_data():
 @app.route("/SubmitExecute", methods=["post"])
 def submit_execute():
     a = json.loads(request.data.decode())
-    a['path']=os.path.normpath(a['path'].strip('"').strip("'"))
-    if re.search('^[A-Za-z]:\\\\([^|><?*\":\\/]*\\\\)*([^|><?*\":\\/]*)?$', a['path']):
+    a["path"] = os.path.normpath(a["path"].strip('"'))
+    if not re.search(
+        '^[A-Za-z]:\\\\([^|><?*":\\/]*\\\\)*([^|><?*":\\/]*)?$', a["path"]
+    ):
         return jsonify({"code": 4, "msg": "提交失败，不是路径的标准格式"})
-    if a['path'] in MY_PATH:
+    if a["path"] in MY_PATH:
         return jsonify({"code": 3, "msg": "提交失败，请不要提交包含本程序的路径"})
-    if os.path.exists(a['path']):
-        if os.path.isdir(a['path']):
+    if os.path.exists(a["path"]):
+        if os.path.isdir(a["path"]):
             execute.update(a)
+            execute["flag"] = 0
             return_old_and_new_name_compare()
             return jsonify({"code": 0, "msg": "提交成功"})
         else:
             return jsonify({"code": 2, "msg": "提交失败，请提交一个目录而非文件"})
     else:
         return jsonify({"code": 1, "msg": "提交失败，目录不存在"})
-
-
-@app.route("/Rename", methods=["post"])
-def Rename():
-    the_repeat_name=[]
-    for i in execute['list']:
-        try:
-            os.rename(i['old'], i['new'])
-        except FileExistsError:
-            the_repeat_name.append(i)
-    for i in the_repeat_name:
-        os.rename(i['old'], i['new'])
-    return jsonify({"code": 0, "msg": "改名成功"})
-
-
-@app.route("/GetData", methods=["post"])
-def get_data():
-    return json.dumps(config["data"], ensure_ascii=False)
-
-
-@app.route("/GetExecute", methods=["post"])
-def get_execute():
-    return jsonify({'map':execute['map'], 'list':execute['list'], 'new':execute['new']})
-
-
-@app.route("/show", methods=["get"])
-def show():
-    return json.dumps(config, ensure_ascii=False)
 
 
 def return_old_and_new_name_compare():
@@ -216,7 +196,7 @@ def return_new_name_list():
         for j in execute["execute"][:-1]:
             if type(j) == int:
                 name += str(config["data"][j]["values"][i])
-            elif type(j)==type(None):
+            elif type(j) == type(None):
                 name += ""
             else:
                 name += str(j)
@@ -254,12 +234,46 @@ def return_last_name(file_name):
     return re.findall(r"\.[^\.]+$", file_name)[0]
 
 
+@app.route("/Rename", methods=["post"])
+def Rename():
+    if execute["flag"]:
+        return jsonify({"code": 1, "msg": "已经改过名了，请勿重复点击"})
+    else:
+        the_repeat_name = []
+        for i in execute["list"]:
+            try:
+                os.rename(i["old"], i["new"])
+            except FileExistsError:
+                the_repeat_name.append(i)
+        for i in the_repeat_name:
+            os.rename(i["old"], i["new"])
+        execute["flag"] = 1
+        return jsonify({"code": 0, "msg": "改名成功"})
+
+
+@app.route("/GetData", methods=["post"])
+def get_data():
+    return json.dumps(config["data"], ensure_ascii=False)
+
+
+@app.route("/GetExecute", methods=["post"])
+def get_execute():
+    return jsonify(
+        {"map": execute["map"], "list": execute["list"], "new": execute["new"]}
+    )
+
+
+@app.route("/show", methods=["get"])
+def show():
+    return json.dumps(config, ensure_ascii=False)
+
+
 if __name__ == "__main__":
-    MY_PATH=os.getcwd()
+    MY_PATH = os.getcwd()
     try:
         config = read_json("config.json")
-    except (FileNotFoundError,json.decoder.JSONDecodeError):
-        config={'version':VERSION, 'data':[]}
+    except (FileNotFoundError, json.decoder.JSONDecodeError):
+        config = {"version": VERSION, "data": []}
         write_json("config.json", config)
     execute = {}
     print("version:", config["version"])
