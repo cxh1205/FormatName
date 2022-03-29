@@ -7,12 +7,24 @@
     <META HTTP-EQUIV="pragma" CONTENT="no-cache"> 
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
-    <title>1</title>
+    <title>填写excel路径</title>
+    <style>
+        .button {
+            background: #1f9eff;
+            box-shadow: 1px 1px 2px #1a86d9,
+                -1px -1px 2px #24b6ff;
+            width: 2em;
+            height: auto;
+            margin: 0.5em;
+            padding: 0.5em;
+        }
+    </style>
 </head>
 <body>
-    <input v-model="message" placeholder="请输入路径" id="in"/>
-    <p>Path is: {{ message }}</p>
-    <div @click="submit">提交</div>
+    <input v-model="message" placeholder="请输入路径" id="in" style="width: 100%;"/>
+    <p>你输入的excel路径为: {{ message }}</p>
+    <div @click="submit" class="button">提交</div>
+    <a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C">使用手册</a>
     <script>
         Vue.createApp({
             data() {
