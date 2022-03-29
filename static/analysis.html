@@ -99,7 +99,7 @@
                     axios.post('Rename').then((res) => {
                         console.log(res.data)
                         alert(res.data['msg'])
-                        window.location.href = "http://localhost:40115/"
+                        window.location.href = window.location.origin+"/"
                     })
                 },
             },

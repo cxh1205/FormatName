@@ -75,12 +75,13 @@
         </table>
         <input type="text" placeholder="请输入文件夹路径" v-model="path">
         <div @click="submit" class="button">提交</div>
+        <div>{{return_set}}</div>
     </div>
 
 
 
     <script>
-        const app = {
+        const app = Vue.createApp({
             data() {
                 return {
                     keys: [],
@@ -112,11 +113,11 @@
                     }).then((res) => {
                         console.log(res.data)
                         alert(res.data['msg'])
-                        window.location.href = "http://localhost:40115/Analysis"
+                        window.location.href = window.location.origin+"/Analysis"
                     })
                 },
                 reset() {
-                    window.location.href = "http://localhost:40115/GetExcel"
+                    window.location.href = window.location.origin+"/GetExcel"
                 },
                 increse() {
                     this.picked.pop()
@@ -130,7 +131,7 @@
                         let list=this.range(1, this.picked.length-1, 2)
                         for (i in list) {
                             console.log(list[i])
-                            this.picked[list[i]] = this.sep;
+                            this.picked[list[i]] = this.return_set;
                         }
                         console.log(this.picked)
                     }
@@ -140,8 +141,14 @@
             created() {
                 this.test()
             },
-        }
-        Vue.createApp(app).mount('body');
+            computed:{
+                return_set(){
+                    console.log(this.sep)
+                    return this.sep;
+                }
+            }
+        })
+        const vm = app.mount('#body');
     </script>
 
 </body>
