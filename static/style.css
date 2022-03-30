@@ -1,0 +1,70 @@
+* {
+    user-select: none;
+    --size: 100vw
+}
+
+body,
+html {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background-color: #ffffff;
+}
+
+.page-head {
+    padding: 2% 5%;
+    width: 90%;
+    background: #602f88;
+    color: #ffffff;
+    font-size: 3em;
+    font-weight: 600;
+    overflow: auto;
+}
+
+.page-head .title {
+    float: left;
+}
+
+.page-head .compass {
+    float: right;
+}
+
+.page-head .compass a {
+    color: white;
+}
+
+.button {
+    background: #602f88;
+    margin: 0.5em;
+    padding: 1em 2em;
+    color: #ffffff;
+    float: left;
+    border-radius: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+table,
+tr,
+td {
+    border: 0;
+    padding: 0;
+    margin: 2%;
+    border-collapse: collapse;
+    overflow: auto;
+}
+table table{
+    margin: 0%;
+    float: left;
+}
+#body {
+    width: 100%;
+}
+input[type="text"]{
+    width: 80%;
+    height: 2em;
+    font-size: 2em;
+    padding: 0 1em;
+    border-radius: 2em;
+    border: 2px solid #602f88;
+    margin: 2%;
+}

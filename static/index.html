@@ -9,76 +9,95 @@
     <title>选取命名格式</title>
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
-    <style>
-        .displaynone {
-            display: none;
-        }
-
-        .button {
-            background: #1f9eff;
-            box-shadow: 1px 1px 2px #1a86d9,
-                -1px -1px 2px #24b6ff;
-            width: 2em;
-            height: auto;
-            margin: 0.5em;
-            padding: 0.5em;
-        }
-    </style>
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div id="body">
-        <div @click="reset" class="button">重置</div>
-        <div @click="increse" class="button">增加</div>
-        <!-- <table>
-            <tr><th>关键字：</th><td v-for="i in key_word">{{i['key']}}</td></tr>
-        </table> -->
-        <table>
-            <tr>
-                <td v-for="i in range(0,select_num,2)" :key="select_num">
-                    <div v-for="key in keys">
-                        <input type="radio" :id="key+i" :value.number="keys.indexOf(key)" v-model="picked[i]" />
-                        <label :for="key+i">{{key}}</label>
-                        <br />
-                    </div>
-                    <div>
-                        <input type="radio" :id="'blank'+i" value="" v-model="picked[i]" checked />
-                        <label :for="'blank'+i">空白</label>
-                        <br />
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <div>
-            <span>分隔符</span>
-            <input type="radio" id="hengxian" value="-" v-model="sep" checked />
-            <label for="hengxian">-</label>
-            <input type="radio" id="kongge" value=" " v-model="sep" />
-            <label for="kongge">空格</label>
-            <input type="radio" id="kongbai" value="" v-model="sep" />
-            <label for="kongbai">无</label>
+    <header class="page-head">
+        <div class="title">Format Name</div>
+        <div class="compass"><a
+                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+                target="_blank">使用手册</a>
         </div>
-        <div @click="updata_sep" class="button">选定</div>
-        <table>
-            <tr>
-                <th>格式</th>
-                <td v-for="i in picked" style="border:0px solid #000;padding: 0px;margin: 0;border-collapse: collapse;border-spacing: 0;">{{keys[i]?keys[i]:i}}</td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <th>样例</th>
-                <td v-for="i in picked" style="border:0px solid #000;padding: 0;margin: 0;border-collapse: collapse;border-spacing: 0;">
-                    {{examples[i]?examples[i]:i}}</td>
-            </tr>
-        </table>
-        <input type="text" placeholder="请输入文件夹路径" v-model="path">
-        <div @click="submit" class="button">提交</div>
-        <a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C">使用手册</a>
-    </div>
+    </header>
+    <table id="body">
+        <tr>
+            <td>
+                <div @click="reset" class="button" style="width: 30%;">重新选择Excel</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td v-for="i in range(0,picked.length,2)">
+                            <div v-for="key in keys">
+                                <input type="radio" :id="key+i" :value.number="keys.indexOf(key)" v-model="picked[i]" />
+                                <label :for="key+i">{{key}}</label>
+                                <br />
+                            </div>
+                            <div>
+                                <input type="radio" :id="'blank'+i" value="" v-model="picked[i]" />
+                                <label :for="'blank'+i">空白</label>
+                                <br />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div @click="increse" class="button">增加</div>
+                <div @click="decrese" class="button">减少</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div>
+                    <span>分隔符</span>
+                    <input type="radio" id="hengxian" value="-" v-model="sep" checked />
+                    <label for="hengxian">-</label>
+                    <input type="radio" id="kongge" value=" " v-model="sep" />
+                    <label for="kongge">空格</label>
+                    <input type="radio" id="kongbai" value="" v-model="sep" />
+                    <label for="kongbai">无</label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <th>格式：</th>
+                        <td>{{return_format}}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <th>样例：</th>
+                        <td>{{return_example}}</td>
+                    </tr>
+                </table>
+                <div>{{updata_sep}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" placeholder="请输入文件夹路径" v-model="path">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div @click="submit" class="button">提交</div>
+            </td>
+        </tr>
 
-
+    </table>
 
     <script>
         const app = Vue.createApp({
@@ -87,23 +106,26 @@
                     keys: [],
                     examples: [],
                     sep: '-',
-                    picked: [, '.xxx'],
+                    picked: [0, '-', 0],
                     path: "",
-                    select_num: 2
                 }
             },
             methods: {
                 range(start, stop, step = 1) {
                     return Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
                 },
-                test() {
+                get_data() {
                     axios.post("GetData")
                         .then((res) => {
                             var data = res.data;
+                            let keys = [];
+                            let examples = [];
                             for (i in data) {
-                                this.keys.push(data[i]['key'])
-                                this.examples.push(data[i]['values'][0])
+                                keys.push(data[i]['key'])
+                                examples.push(data[i]['values'][0])
                             }
+                            this.keys = keys;
+                            this.examples = examples;
                         })
                 },
                 submit() {
@@ -113,42 +135,51 @@
                     }).then((res) => {
                         console.log(res.data)
                         alert(res.data['msg'])
-                        
-                        if(res.data['code']==0){
-                            window.location.href = window.location.origin+"/Analysis"
+
+                        if (res.data['code'] == 0) {
+                            window.location.href = window.location.origin + "/Analysis"
                         }
-                        
+
                     })
                 },
                 reset() {
-                    window.location.href = window.location.origin+"/GetExcel"
+                    window.location.href = window.location.origin + "/GetExcel"
                 },
                 increse() {
-                    this.picked.pop()
-                    this.picked.push(this.sep)
-                    this.picked.push(undefined)
-                    this.picked.push('.xxx');
-                    this.select_num += 2;
+                    this.picked.push(this.sep, 0)
                 },
-                updata_sep(){
+                decrese() {
                     if (this.picked.length > 2) {
-                        let list=this.range(1, this.picked.length-1, 2)
-                        for (i in list) {
-                            console.log(list[i])
-                            this.picked[list[i]] = this.return_set;
-                        }
-                        console.log(this.picked)
+                        this.picked = this.picked.slice(0, -2);
                     }
                 }
-
             },
             created() {
-                this.test()
+                this.get_data()
             },
-            computed:{
-                return_set(){
-                    console.log(this.sep)
-                    return this.sep;
+            computed: {
+                updata_sep() {
+                    for (let i = 1; i < this.picked.length; i += 2) {
+                        this.picked[i] = this.sep;
+                    }
+                },
+                return_format() {
+                    let text = [];
+                    for (let i = 0; i < this.picked.length; i++) {
+                        let item = this.picked[i];
+                        text.push(this.keys[item] ? this.keys[item] : item)
+                    }
+                    text.push(".xxx")
+                    return text.join("")
+                },
+                return_example() {
+                    let text = [];
+                    for (let i = 0; i < this.picked.length; i++) {
+                        let item = this.picked[i];
+                        text.push(this.examples[item] ? this.examples[item] : item)
+                    }
+                    text.push(".xxx")
+                    return text.join("")
                 }
             }
         })
