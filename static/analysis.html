@@ -6,13 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <META HTTP-EQUIV="pragma" CONTENT="no-cache">
-    <title>数据分析</title>
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
     <link rel="stylesheet" href="style.css">
-
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>数据分析</title>
 </head>
-
 
 <body>
     <header class="page-head">
@@ -23,6 +22,11 @@
         </div>
     </header>
     <table id="body">
+        <tr>
+            <td>
+                <div @click="back" class="button">返回</div>
+            </td>
+        </tr>
         <tr>
             <td>
                 <table>
@@ -36,6 +40,12 @@
                     </tr>
 
                 </table>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="tip">点击↓↓↓表格↓↓↓内容即可复制到剪贴板</div>
             </td>
         </tr>
         <tr>
@@ -43,11 +53,17 @@
                 <table>
                     <tr>
                         <th style="border:1px solid #000;">没交</th>
+                    </tr>
+                    <tr v-for="i in none">
+                        <td style="border:1px solid #000;" @click="mes=i;copy()">{{i}}</td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
                         <th style="border:1px solid #000;">多交</th>
                     </tr>
-                    <tr v-for="i in range(0, none.length>remain.length?none.length:remain.length)">
-                        <td style="border:1px solid #000;" @click="mes=none[i];copy()">{{none[i]}}</td>
-                        <td style="border:1px solid #000;" @click="mes=remain[i];copy()">{{remain[i]}}</td>
+                    <tr v-for="i in remain">
+                        <td style="border:1px solid #000;" @click="mes=i;copy()">{{remain[i]}}</td>
                     </tr>
                 </table>
             </td>

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from datetime import timedelta
+from gevent import pywsgi
 import webbrowser, json, openpyxl, os, re
 
 import flask
@@ -11,7 +12,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.2.1"
+VERSION = "v2.2.2"
 
 
 class Excel_List:
@@ -109,12 +110,12 @@ def index():
 
 @app.route("/GetExcel", methods=["get"])
 def get_excel():
-    return app.send_static_file("get_excel.html")
+    return app.send_static_file("excel.html")
 
 
 @app.route("/GetKeyWord", methods=["get"])
 def get_key_word():
-    return app.send_static_file("get_key_word.html")
+    return app.send_static_file("key.html")
 
 
 @app.route("/FormatName", methods=["get"])
@@ -279,7 +280,9 @@ if __name__ == "__main__":
         config = {"version": VERSION, "data": []}
         write_json("config.json", config)
     execute = {}
+    
     print("version:", config["version"])
     print(MY_PATH)
     webbrowser.open_new(HOST_PAGE)
-    app.run(host=HOST, port=PORT)
+    server = pywsgi.WSGIServer((HOST,PORT), app)
+    server.serve_forever()

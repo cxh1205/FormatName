@@ -6,10 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <META HTTP-EQUIV="pragma" CONTENT="no-cache">
-    <title>选取命名格式</title>
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>选取命名格式</title>
+    <style>
+        span {
+            font-weight: bolder;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,11 +29,12 @@
     <table id="body">
         <tr>
             <td>
-                <div @click="reset" class="button" style="width: 30%;">重新选择Excel</div>
+                <div @click="reset" class="button">重新选择Excel</div>
             </td>
         </tr>
         <tr>
             <td>
+                <hr>
                 <table>
                     <tr>
                         <td v-for="i in range(0,picked.length,2)">
@@ -55,7 +62,8 @@
         <tr>
             <td>
                 <div>
-                    <span>分隔符</span>
+                    <hr>
+                    <span>分隔符：</span>
                     <input type="radio" id="hengxian" value="-" v-model="sep" checked />
                     <label for="hengxian">-</label>
                     <input type="radio" id="kongge" value=" " v-model="sep" />
@@ -67,27 +75,19 @@
         </tr>
         <tr>
             <td>
-                <table>
-                    <tr>
-                        <th>格式：</th>
-                        <td>{{return_format}}</td>
-                    </tr>
-                </table>
+                <hr>
+                <span>格式：</span>{{return_format}}
             </td>
         </tr>
         <tr>
             <td>
-                <table>
-                    <tr>
-                        <th>样例：</th>
-                        <td>{{return_example}}</td>
-                    </tr>
-                </table>
+                <span>样例：</span>{{return_example}}
                 <div>{{updata_sep}}</div>
             </td>
         </tr>
         <tr>
             <td>
+                <hr>
                 <input type="text" placeholder="请输入文件夹路径" v-model="path">
             </td>
         </tr>
@@ -146,7 +146,11 @@
                     window.location.href = window.location.origin + "/GetExcel"
                 },
                 increse() {
-                    this.picked.push(this.sep, 0)
+                    if (this.picked.length > 12) {
+                        alert('哥，不至于！')
+                    } else {
+                        this.picked.push(this.sep, 0)
+                    }
                 },
                 decrese() {
                     if (this.picked.length > 2) {

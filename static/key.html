@@ -9,9 +9,17 @@
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico">
     <style>
         .yes {
-            background-color: rgb(35, 236, 9);
+            background-color: #602f88;
+            color: #fff;
+            transition: 0.2s;
+        }
+
+        table table th {
+            background-color: #f9f1ff;
+            transition: 0.2s;
         }
     </style>
     <title>选择关键字</title>
@@ -34,16 +42,26 @@
         </tr>
         <tr>
             <td>
+                <div class="tip">点击表头可以选择关键字，鼠标放在表头上可查看不能作为关键字的原因</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <table>
                     <tr>
-                        <th v-for="key in emmm" style="border:1px solid #000" :class="{yes:key['isKeyWord']}"
+                        <th v-for="key in data" style="border:1px solid #000" :class="{yes:key['isKeyWord']}"
                             :title="key['reason']" @click="key['isKeyWord']=!key['isKeyWord']">{{key['key']}}</th>
                     </tr>
-                    <tr v-for="i in range(0,emmm[0]['values'].length)">
-                        <td v-for="key in emmm" style="border:1px solid #000">{{key["values"][i]}}</td>
+                    <tr v-for="i in range(0,data[0]['values'].length)">
+                        <td v-for="key in data" style="border:1px solid #000">{{key["values"][i]}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div @click="back" class="button">返回</div>
+                            <div @click="submit" class="button">提交</div>
+                        </td>
                     </tr>
                 </table>
-
             </td>
         </tr>
 
@@ -53,26 +71,22 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    emmm: [{
-                        key: 3
-                    }]
+                    data: []
                 }
             },
             methods: {
-                test() {
+                get_data() {
                     axios.post("GetData")
                         .then((res) => {
-                            this.emmm = res.data;
-                            console.log(this.emmm)
+                            this.data = res.data;
                         })
                 },
                 range(start, stop, step = 1) {
                     return Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
                 },
                 submit() {
-                    axios.post("SubmitData", this.emmm)
+                    axios.post("SubmitData", this.data)
                         .then((res) => {
-                            console.log(res.data)
                             alert(res.data['msg'])
                             window.location.href = window.location.origin + "/"
                         })
@@ -83,7 +97,7 @@
 
             },
             created() {
-                this.test()
+                this.get_data()
             }
         })
         const vm = app.mount('#body');
