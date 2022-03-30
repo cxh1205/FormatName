@@ -11,7 +11,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.1.1"
+VERSION = "v2.2.1"
 
 
 class Excel_List:
@@ -193,7 +193,7 @@ def return_new_name_list():
     new_name_list = []
     for i in range(len(config["data"][0]["values"])):
         name = ""
-        for j in execute["execute"][:-1]:
+        for j in execute["execute"]:
             if type(j) == int:
                 name += str(config["data"][j]["values"][i])
             elif type(j) == type(None):
@@ -239,6 +239,9 @@ def Rename():
     if execute["flag"]:
         return jsonify({"code": 1, "msg": "已经改过名了，请勿重复点击"})
     else:
+        new=[x['new'] for x in execute['list']]
+        if(len(set(new))<len(new)):
+            return jsonify({"code": 2, "msg": "新名字不能重复"})
         the_repeat_name = []
         for i in execute["list"]:
             try:

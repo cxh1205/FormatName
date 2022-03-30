@@ -8,37 +8,49 @@
     <META HTTP-EQUIV="pragma" CONTENT="no-cache">
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
+    <link rel="stylesheet" href="style.css">
     <style>
-        .yes{
+        .yes {
             background-color: rgb(35, 236, 9);
-        }
-        .button{
-            background: #1f9eff;
-        box-shadow: 1px 1px 2px #1a86d9,
-            -1px -1px 2px #24b6ff;
-            width: 2em;
-            height: auto;
-            margin: 0.5em;
-            padding: 0.5em;
         }
     </style>
     <title>选择关键字</title>
 </head>
 
 <body>
-    <table>
-        <div @click="back" class="button">返回</div>
-        <div @click="submit" class="button">提交</div>
+    <header class="page-head">
+        <div class="title">Format Name</div>
+        <div class="compass"><a
+                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+                target="_blank">使用手册</a>
+        </div>
+    </header>
+    <table id="body">
         <tr>
-            <th v-for="key in emmm" style="border:1px solid #000" :class="{yes:key['isKeyWord']}" :title="key['reason']" @click="key['isKeyWord']=!key['isKeyWord']">{{key['key']}}</th>
+            <td>
+                <div @click="back" class="button">返回</div>
+                <div @click="submit" class="button">提交</div>
+            </td>
         </tr>
-        <tr v-for="i in range(0,emmm[0]['values'].length)">
-            <td v-for="key in emmm" style="border:1px solid #000">{{key["values"][i]}}</td>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <th v-for="key in emmm" style="border:1px solid #000" :class="{yes:key['isKeyWord']}"
+                            :title="key['reason']" @click="key['isKeyWord']=!key['isKeyWord']">{{key['key']}}</th>
+                    </tr>
+                    <tr v-for="i in range(0,emmm[0]['values'].length)">
+                        <td v-for="key in emmm" style="border:1px solid #000">{{key["values"][i]}}</td>
+                    </tr>
+                </table>
+
+            </td>
         </tr>
+
+
     </table>
-    <a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C">使用手册</a>
     <script>
-        const app = {
+        const app = Vue.createApp({
             data() {
                 return {
                     emmm: [{
@@ -62,10 +74,10 @@
                         .then((res) => {
                             console.log(res.data)
                             alert(res.data['msg'])
-                            window.location.href=window.location.origin+"/"
+                            window.location.href = window.location.origin + "/"
                         })
                 },
-                back(){
+                back() {
                     history.back(-1)
                 }
 
@@ -73,8 +85,8 @@
             created() {
                 this.test()
             }
-        }
-        Vue.createApp(app).mount('body');
+        })
+        const vm = app.mount('#body');
     </script>
 </body>
 

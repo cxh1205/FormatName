@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache"> 
+    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
     <title>填写excel路径</title>
-    <style>
-        .button {
-            background: #1f9eff;
-            box-shadow: 1px 1px 2px #1a86d9,
-                -1px -1px 2px #24b6ff;
-            width: 2em;
-            height: auto;
-            margin: 0.5em;
-            padding: 0.5em;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <input v-model="message" placeholder="请输入路径" id="in" style="width: 100%;"/>
-    <p>你输入的excel路径为: {{ message }}</p>
-    <div @click="submit" class="button">提交</div>
-    <a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C">使用手册</a>
+    <header class="page-head">
+        <div class="title">Format Name</div>
+        <div class="compass"><a
+                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+                target="_blank">使用手册</a>
+        </div>
+    </header>
+    <table id="body">
+        <tr>
+            <td>
+                <input type="text" v-model="message" placeholder="请输入路径" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>你输入的excel路径为: {{ message }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div @click="submit" class="button">提交</div>
+            </td>
+        </tr>
+    </table>
     <script>
-        Vue.createApp({
+        const app = Vue.createApp({
             data() {
                 return {
                     message: ""
@@ -34,18 +46,22 @@
             },
             methods: {
                 submit() {
-                    axios.post("SubmitExcelPath", {"path": this.message.replace(/\\/g,"/")})
+                    axios.post("SubmitExcelPath", {
+                            "path": this.message.replace(/\\/g, "/")
+                        })
                         .then((res) => {
                             console.log(res.data)
                             alert(res.data['msg'])
-                            if(res.data['code']==0){
-                                window.location.href = window.location.origin+"/GetKeyWord";
+                            if (res.data['code'] == 0) {
+                                window.location.href = window.location.origin + "/GetKeyWord";
                             }
                         })
-                    
+
                 }
             }
-        }).mount('body')
+        })
+        const vm = app.mount('#body');
     </script>
 </body>
+
 </html>

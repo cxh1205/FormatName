@@ -9,48 +9,61 @@
     <title>数据分析</title>
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
-    <style>
-        .button {
-            background: #1f9eff;
-            box-shadow: 1px 1px 2px #1a86d9,
-                -1px -1px 2px #24b6ff;
-            width: 2em;
-            height: auto;
-            margin: 0.5em;
-            padding: 0.5em;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
 
 <body>
-    <table>
+    <header class="page-head">
+        <div class="title">Format Name</div>
+        <div class="compass"><a
+                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+                target="_blank">使用手册</a>
+        </div>
+    </header>
+    <table id="body">
         <tr>
-            <th style="border:1px solid #000;">旧名字</th>
-            <th style="border:1px solid #000;">新名字</th>
+            <td>
+                <table>
+                    <tr>
+                        <th style="border:1px solid #000;">旧名字</th>
+                        <th style="border:1px solid #000;">新名字</th>
+                    </tr>
+                    <tr v-for="name in list">
+                        <td style="border:1px solid #000;">{{name['old']}}</td>
+                        <td style="border:1px solid #000;">{{name['new']}}</td>
+                    </tr>
+
+                </table>
+            </td>
         </tr>
-        <tr v-for="name in list">
-            <td style="border:1px solid #000;">{{name['old']}}</td>
-            <td style="border:1px solid #000;">{{name['new']}}</td>
-        </tr>
-    
-    </table>
-    <table>
         <tr>
-            <th style="border:1px solid #000;">没交</th>
-            <th style="border:1px solid #000;">多交</th>
+            <td>
+                <table>
+                    <tr>
+                        <th style="border:1px solid #000;">没交</th>
+                        <th style="border:1px solid #000;">多交</th>
+                    </tr>
+                    <tr v-for="i in range(0, none.length>remain.length?none.length:remain.length)">
+                        <td style="border:1px solid #000;" @click="mes=none[i];copy()">{{none[i]}}</td>
+                        <td style="border:1px solid #000;" @click="mes=remain[i];copy()">{{remain[i]}}</td>
+                    </tr>
+                </table>
+            </td>
         </tr>
-        <tr v-for="i in range(0, none.length>remain.length?none.length:remain.length)">
-            <td style="border:1px solid #000;" @click="mes=none[i];copy()">{{none[i]}}</td>
-            <td style="border:1px solid #000;" @click="mes=remain[i];copy()">{{remain[i]}}</td>
+
+        <tr>
+            <td>
+                <div @click="submit" class="button">改名</div>
+                <div @click="back" class="button">返回</div>
+            </td>
         </tr>
+
     </table>
-    <div @click="submit" class="button">改名</div>
-    <div @click="back" class="button">返回</div>
-    <a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C">使用手册</a>
+
     <script>
-        Vue.createApp({
+        const app = Vue.createApp({
             data() {
                 return {
                     list: [],
@@ -104,14 +117,15 @@
                         alert(res.data['msg'])
                     })
                 },
-                back(){
+                back() {
                     history.back(-1)
                 }
             },
             created() {
                 this.test()
             }
-        }).mount('body')
+        })
+        const vm = app.mount('#body');
     </script>
 </body>
 
