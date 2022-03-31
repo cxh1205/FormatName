@@ -45,11 +45,6 @@ html {
     text-align: center;
 }
 
-table table {
-    margin: 0%;
-    float: left;
-}
-
 #body {
     width: 96%;
     border: 0;
@@ -59,7 +54,12 @@ table table {
 
 #body>tbody>tr>td {
     border-collapse: collapse;
-    overflow: auto;
+    vertical-align: top;
+}
+
+table table {
+    margin: 0%;
+    display: inline;
 }
 
 #body table td {

@@ -12,7 +12,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.3.1"
+VERSION = "v2.3.2"
 
 
 class Excel_List:

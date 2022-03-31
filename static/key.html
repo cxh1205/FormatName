@@ -1,107 +1,129 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache" />
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="favicon.ico" />
     <style>
-        .yes {
-            background-color: #602f88;
-            color: #fff;
-            transition: 0.2s;
-        }
+      .yes {
+        background-color: #602f88;
+        color: #fff;
+        transition: 0.2s;
+      }
 
-        table table th {
-            background-color: #f9f1ff;
-            transition: 0.2s;
-        }
+      table table th {
+        background-color: #f9f1ff;
+        transition: 0.2s;
+      }
+      td th,
+      td td {
+        border: 1px solid #000;
+      }
     </style>
     <title>选择关键字</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <header class="page-head">
-        <div class="title" onclick="window.location.href = window.location.origin + '/log'">Format Name</div>
-        <div class="compass"><a
-                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
-                target="_blank">使用手册</a>
-        </div>
+      <div
+        class="title"
+        onclick="window.location.href = window.location.origin + '/log'"
+      >
+        Format Name
+      </div>
+      <div class="compass">
+        <a
+          href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+          target="_blank"
+          >使用手册</a
+        >
+      </div>
     </header>
     <table id="body">
-        <tr>
-            <td>
-                <div @click="back" class="button">返回</div>
-                <div @click="submit" class="button">提交</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="tip">点击表头可以选择关键字，鼠标放在表头上可查看不能作为关键字的原因</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <th v-for="key in data" style="border:1px solid #000" :class="{yes:key['isKeyWord']}"
-                            :title="key['reason']" @click="key['isKeyWord']=!key['isKeyWord']">{{key['key']}}</th>
-                    </tr>
-                    <tr v-for="i in range(0,data[0]['values'].length)">
-                        <td v-for="key in data" style="border:1px solid #000">{{key["values"][i]}}</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div @click="back" class="button">返回</div>
-                            <div @click="submit" class="button">提交</div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-
-
+      <tr>
+        <td>
+          <div @click="back" class="button">返回</div>
+          <div @click="submit" class="button">提交</div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="tip">
+            点击表头可以选择关键字，鼠标放在表头上可查看不能作为关键字的原因
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <table>
+            <tr>
+              <th
+                v-for="key in data"
+                :class="{yes:key['isKeyWord']}"
+                :title="key['reason']"
+                @click="key['isKeyWord']=!key['isKeyWord']"
+              >
+                {{key['key']}}
+              </th>
+            </tr>
+            <tr v-for="i in range(0,data[0]['values'].length)">
+              <td v-for="key in data">{{key["values"][i]}}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div @click="back" class="button">返回</div>
+          <div @click="submit" class="button">提交</div>
+        </td>
+      </tr>
     </table>
     <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    data: []
-                }
-            },
-            methods: {
-                get_data() {
-                    axios.post("GetData")
-                        .then((res) => {
-                            this.data = res.data;
-                        })
-                },
-                range(start, stop, step = 1) {
-                    return Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
-                },
-                submit() {
-                    axios.post("SubmitData", this.data)
-                        .then((res) => {
-                            alert(res.data['msg'])
-                            window.location.href = window.location.origin + "/"
-                        })
-                },
-                back() {
-                    history.back(-1)
-                }
-
-            },
-            created() {
-                this.get_data()
+      const app = Vue.createApp({
+        data() {
+          return {
+            data: [],
+          };
+        },
+        methods: {
+          get_data() {
+            axios.post("GetData").then((res) => {
+              this.data = res.data;
+            });
+          },
+          range(start, stop, step = 1) {
+            return Array(Math.ceil((stop - start) / step))
+              .fill(start)
+              .map((x, y) => x + y * step);
+          },
+          submit() {
+            for (var i = 0; i < this.data.length; i++) {
+              if (this.data[i]["isKeyWord"]) break;
             }
-        })
-        const vm = app.mount('#body');
+            if (i == this.data.length) {
+              alert("请至少选择一个关键字");
+            } else {
+              axios.post("SubmitData", this.data).then((res) => {
+                alert(res.data["msg"]);
+                window.location.href = window.location.origin + "/";
+              });
+            }
+          },
+          back() {
+            history.back(-1);
+          },
+        },
+        created() {
+          this.get_data();
+        },
+      });
+      const vm = app.mount("#body");
     </script>
-</body>
-
+  </body>
 </html>

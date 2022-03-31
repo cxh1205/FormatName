@@ -77,13 +77,17 @@
         .sep-contain {
             opacity: 0;
             width: 0;
+            height: 87px;
             transition: width 0.2s ease 0.1s, opacity 0.1s ease 0s;
+            overflow: hidden;
         }
 
         .sep-contain-display {
             opacity: 1;
             width: 56px;
+            height: 87px;
             transition: opacity 0.2s ease 0.2s, width 0.2s ease 0s;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -108,7 +112,7 @@
                 <table>
                     <tr>
                         <td v-for="(i,index) in picked">
-                            <div v-if="index%2==0">
+                            <div v-if="index%2==0" style="min-height: 87px;">
                                 <div v-for="key in keys">
                                     <input type="radio" :id="key+index" :value.number="keys.indexOf(key)"
                                         v-model="picked[index]" class="radio" />
