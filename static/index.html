@@ -12,15 +12,87 @@
     <link rel="shortcut icon" href="favicon.ico">
     <title>选取命名格式</title>
     <style>
-        span {
+        .bold {
             font-weight: bolder;
         }
+
+        input[type="radio"]+label::before {
+            content: "\a0";
+            /*不换行空格*/
+            display: inline-block;
+            vertical-align: 2px;
+            width: 11px;
+            height: 11px;
+            margin-right: 5px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 1px solid var(--color);
+            text-indent: 2px;
+            line-height: .65;
+            padding: 3px;
+        }
+
+        input[type="radio"]:checked+label::before {
+            background-color: var(--color);
+            padding: 3px;
+            background-clip: content-box;
+        }
+
+        input[type="radio"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+
+        input[type="radio"].sep:checked+label::before {
+            background-color: #d1b4ff;
+        }
+
+        input[type="checkbox"]:checked+label::before {
+            background-color: var(--color);
+        }
+
+        input[type="checkbox"]+label::before {
+            content: "\2713";
+            /*不换行空格*/
+            color: #ffffff;
+            display: inline-block;
+            vertical-align: .2em;
+            width: 1em;
+            height: 1em;
+            margin-right: .2em;
+            border-radius: .2em;
+            background-color: silver;
+            text-indent: .15em;
+            line-height: .55;
+            /*行高不加单位，子元素将继承数字乘以自身字体尺寸而非父元素行高*/
+        }
+
+        input[type="checkbox"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+
+        
+
+        .sep-contain{
+            opacity: 0;
+            width: 0;
+            transition: width 0.2s ease 0.1s,opacity 0.1s ease 0s;
+        }
+        .sep-contain-display{
+            opacity: 1;
+            width: 56px;
+            transition: opacity 0.2s ease 0.2s, width 0.2s ease 0s;
+        }
+
+
+
     </style>
 </head>
 
 <body>
     <header class="page-head">
-        <div class="title">Format Name</div>
+        <div class="title"  onclick="window.location.href = window.location.origin + '/updata.html'">Format Name</div>
         <div class="compass"><a
                 href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
                 target="_blank">使用手册</a>
@@ -37,16 +109,36 @@
                 <hr>
                 <table>
                     <tr>
-                        <td v-for="i in range(0,picked.length,2)">
-                            <div v-for="key in keys">
-                                <input type="radio" :id="key+i" :value.number="keys.indexOf(key)" v-model="picked[i]" />
-                                <label :for="key+i">{{key}}</label>
-                                <br />
+                        <td v-for="(i,index) in picked">
+                            <div v-if="index%2==0">
+                                <div v-for="key in keys">
+                                    <input type="radio" :id="key+index" :value.number="keys.indexOf(key)"
+                                        v-model="picked[index]" class="radio" />
+                                    <label :for="key+index">{{key}}</label>
+                                    <br />
+                                </div>
+                                <div>
+                                    <input style="width: 5em;" v-model="picked[index]" />
+                                    <br />
+                                </div>
                             </div>
-                            <div>
-                                <input type="radio" :id="'blank'+i" value="" v-model="picked[i]" />
-                                <label :for="'blank'+i">空白</label>
+                            <div v-else :class="{'sep-contain-display':!same, 'sep-contain':same}">
+                                <input type="radio" :id="'kongbai'+index" value="" v-model="picked[index]"
+                                    class="sep" />
+                                <label :for="'kongbai'+index">无&nbsp;&nbsp;</label>
                                 <br />
+                                <input type="radio" :id="'hengxian'+index" value="-" v-model="picked[index]"
+                                    class="sep" />
+                                <label :for="'hengxian'+index">-&nbsp;&nbsp;&nbsp;</label>
+                                <br />
+                                <input type="radio" :id="'kongge'+index" value=" " v-model="picked[index]"
+                                    class="sep" />
+                                <label :for="'kongge'+index">空格</label>
+                                <br />
+                                <div>
+                                    <input style="width: 50px;" v-model="picked[index]" />
+                                    <br />
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -63,26 +155,33 @@
             <td>
                 <div>
                     <hr>
-                    <span>分隔符：</span>
-                    <input type="radio" id="hengxian" value="-" v-model="sep" checked />
-                    <label for="hengxian">-</label>
-                    <input type="radio" id="kongge" value=" " v-model="sep" />
-                    <label for="kongge">空格</label>
-                    <input type="radio" id="kongbai" value="" v-model="sep" />
-                    <label for="kongbai">无</label>
+                    <input type="checkbox" v-model="same" id="same" />
+                    <label for="same" class="bold">统一分隔符</label>
+                    <span v-show="same">
+                        <label class="bold">为：&nbsp;</label>
+                        <input type="radio" id="kongbai" value="" v-model="sep" class="radio" />
+                        <label for="kongbai">无&nbsp;</label>
+                        <input type="radio" id="hengxian" value="-" v-model="sep" class="radio" />
+                        <label for="hengxian">&nbsp;-&nbsp;&nbsp;</label>
+                        <input type="radio" id="kongge" value=" " v-model="sep" class="radio" />
+                        <label for="kongge">空格&nbsp;&nbsp;或自定义为</label>
+                        <input style="width: 2em;" v-model="sep" />
+                    </span>
+
                 </div>
             </td>
         </tr>
         <tr>
             <td>
                 <hr>
-                <span>格式：</span>{{return_format}}
+                <label class="bold">格式：</label>
+                <div class="raw" style="display: inline;">{{return_format}}</div>
             </td>
         </tr>
         <tr>
             <td>
-                <span>样例：</span>{{return_example}}
-                <div>{{updata_sep}}</div>
+                <label class="bold">样例：</label>
+                <div class="raw" style="display: inline;">{{return_example}}</div>
             </td>
         </tr>
         <tr>
@@ -105,9 +204,10 @@
                 return {
                     keys: [],
                     examples: [],
-                    sep: '-',
+                    sep: '',
                     picked: [0, '-', 0],
                     path: "",
+                    same: true,
                 }
             },
             methods: {
@@ -156,17 +256,33 @@
                     if (this.picked.length > 2) {
                         this.picked = this.picked.slice(0, -2);
                     }
+                },
+                get_newest() {
+                    axios.get('https://gitee.com/cxh1205/format-name/raw/master/updata.json')
+                        .then((res) => {
+                            console.log(res.data)
+                        })
                 }
             },
             created() {
                 this.get_data()
+                // this.get_newest()
             },
-            computed: {
-                updata_sep() {
+            watch: {
+                sep() {
                     for (let i = 1; i < this.picked.length; i += 2) {
                         this.picked[i] = this.sep;
                     }
                 },
+                same() {
+                    if (same) {
+                        for (let i = 1; i < this.picked.length; i += 2) {
+                            this.picked[i] = this.sep;
+                        }
+                    }
+                }
+            },
+            computed: {
                 return_format() {
                     let text = [];
                     for (let i = 0; i < this.picked.length; i++) {

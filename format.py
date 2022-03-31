@@ -12,7 +12,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.2.2"
+VERSION = "v2.3.1"
 
 
 class Excel_List:
@@ -266,6 +266,11 @@ def get_execute():
         {"map": execute["map"], "list": execute["list"], "new": execute["new"]}
     )
 
+@app.route("/GetVersion", methods=["post"])
+def get_version():
+    return jsonify(
+        {"version": VERSION}
+    )
 
 @app.route("/show", methods=["get"])
 def show():
@@ -277,11 +282,11 @@ if __name__ == "__main__":
     try:
         config = read_json("config.json")
     except (FileNotFoundError, json.decoder.JSONDecodeError):
-        config = {"version": VERSION, "data": []}
+        config = {"data": []}
         write_json("config.json", config)
     execute = {}
     
-    print("version:", config["version"])
+    print("version:", VERSION)
     print(MY_PATH)
     webbrowser.open_new(HOST_PAGE)
     server = pywsgi.WSGIServer((HOST,PORT), app)
