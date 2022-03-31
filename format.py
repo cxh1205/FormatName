@@ -128,6 +128,11 @@ def analysis():
     return app.send_static_file("analysis.html")
 
 
+@app.route("/log", methods=["get"])
+def log():
+    return app.send_static_file("updata.html")
+
+
 @app.route("/SubmitExcelPath", methods=["post"])
 def submit_excel_path():
     path = os.path.normpath(json.loads(request.data.decode())["path"].strip('"'))
@@ -240,8 +245,8 @@ def Rename():
     if execute["flag"]:
         return jsonify({"code": 1, "msg": "已经改过名了，请勿重复点击"})
     else:
-        new=[x['new'] for x in execute['list']]
-        if(len(set(new))<len(new)):
+        new = [x["new"] for x in execute["list"]]
+        if len(set(new)) < len(new):
             return jsonify({"code": 2, "msg": "新名字不能重复"})
         the_repeat_name = []
         for i in execute["list"]:
@@ -266,11 +271,11 @@ def get_execute():
         {"map": execute["map"], "list": execute["list"], "new": execute["new"]}
     )
 
+
 @app.route("/GetVersion", methods=["post"])
 def get_version():
-    return jsonify(
-        {"version": VERSION}
-    )
+    return jsonify({"version": VERSION})
+
 
 @app.route("/show", methods=["get"])
 def show():
@@ -285,9 +290,9 @@ if __name__ == "__main__":
         config = {"data": []}
         write_json("config.json", config)
     execute = {}
-    
+
     print("version:", VERSION)
     print(MY_PATH)
     webbrowser.open_new(HOST_PAGE)
-    server = pywsgi.WSGIServer((HOST,PORT), app)
+    server = pywsgi.WSGIServer((HOST, PORT), app)
     server.serve_forever()

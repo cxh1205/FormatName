@@ -67,7 +67,7 @@ table table {
     vertical-align: top;
 }
 
-input{
+input {
     border: 1px solid var(--color);
 }
 
@@ -86,7 +86,8 @@ input[type="text"] {
     color: var(--color);
     font-size: 1.2em;
 }
+
 /* 需要显示空格 */
-.raw{
+.raw {
     white-space: pre;
 }

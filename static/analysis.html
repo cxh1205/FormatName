@@ -12,15 +12,16 @@
     <link rel="shortcut icon" href="favicon.ico">
     <title>数据分析</title>
     <style>
-        #body table th,#body table td{
-            border:1px solid #000;
+        #body table th,
+        #body table td {
+            border: 1px solid #000;
         }
     </style>
 </head>
 
 <body>
     <header class="page-head">
-        <div class="title" onclick="window.location.href = window.location.origin + '/updata.html'">Format Name</div>
+        <div class="title" onclick="window.location.href = window.location.origin + '/log'">Format Name</div>
         <div class="compass"><a
                 href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
                 target="_blank">使用手册</a>
@@ -36,12 +37,12 @@
             <td>
                 <table>
                     <tr>
-                        <th >旧名字</th>
-                        <th >新名字</th>
+                        <th>旧名字</th>
+                        <th>新名字</th>
                     </tr>
                     <tr v-for="name in list">
-                        <td  class="raw">{{name['old']}}</td>
-                        <td  class="raw">{{name['new']}}</td>
+                        <td class="raw">{{name['old']}}</td>
+                        <td class="raw">{{name['new']}}</td>
                     </tr>
 
                 </table>
@@ -57,18 +58,18 @@
             <td>
                 <table>
                     <tr>
-                        <th >没交</th>
+                        <th>没交</th>
                     </tr>
                     <tr v-for="i in none">
-                        <td  @click="mes=i;copy()" class="raw">{{i}}</td>
+                        <td @click="mes=i;copy()" class="raw">{{i}}</td>
                     </tr>
                 </table>
                 <table>
                     <tr>
-                        <th >多交</th>
+                        <th>多交</th>
                     </tr>
                     <tr v-for="i in remain">
-                        <td  @click="mes=i;copy()" class="raw">{{remain[i]}}</td>
+                        <td @click="mes=i;copy()" class="raw">{{remain[i]}}</td>
                     </tr>
                 </table>
             </td>
