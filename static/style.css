@@ -91,3 +91,8 @@ input[type="text"] {
 .raw {
     white-space: pre;
 }
+
+.noty_body{
+    font-size: 2em!important;
+    font-weight: bolder;
+}

@@ -8,6 +8,10 @@
     <META HTTP-EQUIV="pragma" CONTENT="no-cache">
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
+    <script src="noty.min.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="noty.css">
+    <link rel="stylesheet" href="mint.css">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico">
     <title>选取命名格式</title>
@@ -194,7 +198,7 @@
         </tr>
         <tr>
             <td>
-                <div @click="submit" class="button">提交</div>
+                <div @click="submit" class="button submit">提交</div>
             </td>
         </tr>
 
@@ -207,7 +211,7 @@
                     keys: [],
                     examples: [],
                     sep: '',
-                    picked: [0, '-', 0],
+                    picked: [0, '', 0],
                     path: "",
                     same: true,
                 }
@@ -236,10 +240,14 @@
                         "execute": this.picked
                     }).then((res) => {
                         console.log(res.data)
-                        alert(res.data['msg'])
 
                         if (res.data['code'] == 0) {
-                            window.location.href = window.location.origin + "/Analysis"
+                            notify(res.data['msg'], 'success')
+                            setTimeout(() => {
+                                window.location.href = window.location.origin + "/Analysis"
+                            }, 1000)
+                        } else {
+                            notify(res.data['msg'], 'error')
                         }
 
                     })
@@ -249,7 +257,7 @@
                 },
                 increse() {
                     if (this.picked.length > 12) {
-                        alert('哥，不至于！')
+                        notify('哥，不至于！', 'warning')
                     } else {
                         this.picked.push(this.sep, 0)
                     }

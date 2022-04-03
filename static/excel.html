@@ -8,6 +8,10 @@
     <META HTTP-EQUIV="pragma" CONTENT="no-cache">
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
+    <script src="noty.min.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="noty.css">
+    <link rel="stylesheet" href="mint.css">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico">
     <title>填写excel路径</title>
@@ -29,7 +33,7 @@
         </tr>
         <tr>
             <td>
-                <div @click="submit" class="button">提交</div>
+                <div @click="submit" class="button submit">提交</div>
             </td>
         </tr>
     </table>
@@ -46,10 +50,13 @@
                             "path": this.message.replace(/\\/g, "/")
                         })
                         .then((res) => {
-                            console.log(res.data)
-                            alert(res.data['msg'])
                             if (res.data['code'] == 0) {
-                                window.location.href = window.location.origin + "/GetKeyWord";
+                                notify(res.data['msg'], 'success')
+                                setTimeout(() => {
+                                    window.location.href = window.location.origin + "/GetKeyWord";
+                                }, 1000)
+                            } else {
+                                notify(res.data['msg'], 'error')
                             }
                         })
 

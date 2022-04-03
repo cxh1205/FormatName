@@ -8,6 +8,10 @@
     <META HTTP-EQUIV="pragma" CONTENT="no-cache">
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
+    <script src="noty.min.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="noty.css">
+    <link rel="stylesheet" href="mint.css">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico">
     <title>数据分析</title>
@@ -69,7 +73,7 @@
                         <th>多交</th>
                     </tr>
                     <tr v-for="i in remain">
-                        <td @click="mes=i;copy()" class="raw">{{remain[i]}}</td>
+                        <td @click="mes=i;copy()" class="raw">{{i}}</td>
                     </tr>
                 </table>
             </td>
@@ -77,7 +81,7 @@
 
         <tr>
             <td>
-                <div @click="submit" class="button">改名</div>
+                <div @click="submit" class="button submit">改名</div>
                 <div @click="back" class="button">返回</div>
             </td>
         </tr>
@@ -135,8 +139,12 @@
                 },
                 submit() {
                     axios.post('Rename').then((res) => {
-                        console.log(res.data)
-                        alert(res.data['msg'])
+                        if (res.data['code'] == 0) {
+                            notify(res.data['msg'], 'success')
+                        }
+                        else{
+                            notify(res.data['msg'], 'error')
+                        }
                     })
                 },
                 back() {
