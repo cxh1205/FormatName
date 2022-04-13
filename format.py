@@ -12,7 +12,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.4.0"
+VERSION = "v2.4.1"
 
 
 class Excel_List:
@@ -130,7 +130,7 @@ def analysis():
 
 @app.route("/log", methods=["get"])
 def log():
-    return app.send_static_file("updata.html")
+    return app.send_static_file("update.html")
 
 
 @app.route("/SubmitExcelPath", methods=["post"])

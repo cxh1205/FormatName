@@ -193,7 +193,7 @@
         <tr>
             <td>
                 <hr>
-                <input type="text" placeholder="请输入文件夹路径" v-model="path">
+                <input type="text" placeholder="请输入包含重命名文件的文件夹路径" v-model="path">
             </td>
         </tr>
         <tr>
@@ -268,7 +268,7 @@
                     }
                 },
                 get_newest() {
-                    axios.get('https://gitee.com/cxh1205/format-name/raw/master/updata.json')
+                    axios.get('https://gitee.com/cxh1205/format-name/raw/master/update.json')
                         .then((res) => {
                             console.log(res.data)
                         })

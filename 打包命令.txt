@@ -1,0 +1,1 @@
+pyinstaller -F format.py --add-data="static;static" --icon="图标/i.ico"

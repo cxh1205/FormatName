@@ -10,7 +10,7 @@
 
 因此只要有一个班级的excel花名册，就可以一键重命名收集到的文件！
 
-[更新日志](https://cxh1205.gitee.io/formatname/updata.html)
+[更新日志](https://cxh1205.gitee.io/formatname/update.html)
 
 ## 开发理念
 
