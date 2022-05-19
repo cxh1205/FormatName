@@ -12,7 +12,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.4.2"
+VERSION = "v2.4.3"
 
 
 class Excel_List:
@@ -27,7 +27,7 @@ class Excel_List:
         if self.sheet.max_column <= 1:  # 单列表格
             self.first_line = 1
             self.find_last_line()
-            if self.last_line<2:
+            if self.last_line < 2:
                 return -1
             self.first_col = 1
             self.last_col = 1
@@ -37,7 +37,7 @@ class Excel_List:
                 if self.sheet.cell(i, 2).value != None:
                     self.first_line = i
                     self.find_last_line()
-                    if self.last_line<2:
+                    if self.last_line < 2:
                         return -1
                     self.first_col = 1
                     self.find_last_col()
@@ -79,7 +79,13 @@ class Excel_List:
         del col["delta"]
 
         #判断表格值是否为序号
-
+        try:
+            if sum([float(i) for i in col['values']
+                    ]) < (self.last_line - self.first_line + 1)**2:
+                col["isKeyWord"] = False
+                col["reason"] = "该项可能是序号，不适合做关键字"
+        except ValueError:
+            pass
         return col
 
     def return_excel_data(self):  # 构成关键字表格
@@ -169,13 +175,13 @@ def submit_excel_path():
             "提交失败，不能读取该格式文件，请选择(.xlsx)(.xlsm)(.xltx)(.xltm)文件"
         })
     sheet = Excel_List(path)
-    code=sheet.is_correct_excel()
-    if code==1:
+    code = sheet.is_correct_excel()
+    if code == 1:
         config["data"] = sheet.return_excel_data()
         return json.dumps({"code": 0, "msg": "读取成功"}, ensure_ascii=False)
-    elif code==0:
+    elif code == 0:
         return json.dumps({"code": 3, "msg": "文件不能为空"}, ensure_ascii=False)
-    elif code==-1:
+    elif code == -1:
         return json.dumps({"code": 4, "msg": "文件应至少有2行"}, ensure_ascii=False)
 
 
