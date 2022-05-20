@@ -10,7 +10,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.4.4"
+VERSION = "v2.5.0"
 
 
 class Excel_List:
@@ -427,14 +427,17 @@ def get_execute():
 
     "map"：匹配成功的次数标记
 
-    "list"：
+    "list"：新旧名字对应表
 
     "new"：新名字
+
+    "old"：旧名字
     '''
     return jsonify({
         "map": execute["map"],
         "list": execute["list"],
-        "new": execute["new"]
+        "new": execute["new"],
+        "old": execute["old"]
     })
 
 

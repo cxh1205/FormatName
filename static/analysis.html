@@ -2,18 +2,18 @@
 <html lang="zh-cn">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache" />
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
     <script src="noty.min.js"></script>
     <script src="index.js"></script>
-    <link rel="stylesheet" href="noty.css">
-    <link rel="stylesheet" href="mint.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="noty.css" />
+    <link rel="stylesheet" href="mint.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="favicon.ico" />
     <title>数据分析</title>
     <style>
         #body table th,
@@ -25,9 +25,11 @@
 
 <body>
     <header class="page-head">
-        <div class="title" onclick="window.location.href = window.location.origin + '/log'">Format Name</div>
-        <div class="compass"><a
-                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+        <div class="title" onclick="window.location.href = window.location.origin + '/log'">
+            Format Name
+        </div>
+        <div class="compass">
+            <a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
                 target="_blank">使用手册</a>
         </div>
     </header>
@@ -48,9 +50,7 @@
                         <td class="raw">{{name['old']}}</td>
                         <td class="raw">{{name['new']}}</td>
                     </tr>
-
                 </table>
-
             </td>
         </tr>
         <tr>
@@ -76,6 +76,14 @@
                         <td @click="mes=i;copy()" class="raw">{{i}}</td>
                     </tr>
                 </table>
+                <table>
+                    <tr>
+                        <th>未知</th>
+                    </tr>
+                    <tr v-for="i in unknow">
+                        <td @click="mes=i;copy()" class="raw">{{i}}</td>
+                    </tr>
+                </table>
             </td>
         </tr>
 
@@ -85,7 +93,6 @@
                 <div @click="back" class="button">返回</div>
             </td>
         </tr>
-
     </table>
 
     <script>
@@ -93,68 +100,76 @@
             data() {
                 return {
                     list: [],
-                    new: [],
-                    map: [],
+                    unknow: [],
                     none: [],
                     remain: [],
-                    mes: ''
-                }
+                    mes: "",
+                };
             },
             methods: {
                 range(start, stop, step = 1) {
-                    return Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
+                    return Array(Math.ceil((stop - start) / step))
+                        .fill(start)
+                        .map((x, y) => x + y * step);
                 },
                 test() {
-                    axios.post("GetExecute")
-                        .then((res) => {
-                            var data = res.data;
-                            this.list = res.data['list']
-                            this.map = res.data['map']
-                            this.new = res.data['new']
-                            for (i in this.range(0, this.map.length)) {
-                                if (this.map[i] == 0) {
-                                    this.none.push(this.new[i])
-                                } else if (this.map[i] > 1) {
-                                    this.remain.push(this.new[i])
-                                }
+                    axios.post("GetExecute").then((res) => {
+                        var data = res.data;
+                        this.list = res.data["list"];
+                        map = res.data["map"];
+                        new_list = res.data["new"];
+                        old_list = res.data["old"];
+                        for (i in this.range(0, map.length)) {
+                            if (map[i] == 0) {
+                                this.none.push(new_list[i]); //没交的
+                            } else if (map[i] > 1) {
+                                this.remain.push(new_list[i]); //多交的
                             }
-                            console.log(this.none, this.remain)
-                        })
+                        }
+                        for(i in this.list){
+                            old_list[old_list.indexOf(this.list[i]['old'])]=null;//原本名字里有的改成null
+                        }
+                        for (i in old_list){
+                            if(old_list[i]){
+                                this.unknow.push(old_list[i]);
+                            }
+                        }
+                    });
                 },
                 copy() {
                     //创建input标签
-                    var input = document.createElement('input')
+                    var input = document.createElement("input");
                     //将input的值设置为需要复制的内容
                     input.value = this.mes;
                     //添加input标签
-                    document.body.appendChild(input)
+                    document.body.appendChild(input);
                     //选中input标签
-                    input.select()
+                    input.select();
                     //执行复制
-                    document.execCommand('copy')
+                    document.execCommand("copy");
                     //成功提示信息
-                    alert('复制成功')
+                    alert("复制成功");
                     //移除input标签
-                    document.body.removeChild(input)
+                    document.body.removeChild(input);
                 },
                 submit() {
-                    axios.post('Rename').then((res) => {
-                        if (res.data['code'] == 0) {
-                            notify(res.data['msg'], 'success')
+                    axios.post("Rename").then((res) => {
+                        if (res.data["code"] == 0) {
+                            notify(res.data["msg"], "success");
                         } else {
-                            notify(res.data['msg'], 'error')
+                            notify(res.data["msg"], "error");
                         }
-                    })
+                    });
                 },
                 back() {
                     document.location.href = "/";
-                }
+                },
             },
             created() {
-                this.test()
-            }
-        })
-        const vm = app.mount('#body');
+                this.test();
+            },
+        });
+        const vm = app.mount("#body");
     </script>
 </body>
 
