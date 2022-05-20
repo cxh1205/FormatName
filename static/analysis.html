@@ -141,14 +141,13 @@
                     axios.post('Rename').then((res) => {
                         if (res.data['code'] == 0) {
                             notify(res.data['msg'], 'success')
-                        }
-                        else{
+                        } else {
                             notify(res.data['msg'], 'error')
                         }
                     })
                 },
                 back() {
-                    history.back(-1)
+                    document.location.href = "/";
                 }
             },
             created() {
