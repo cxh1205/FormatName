@@ -63,7 +63,9 @@
                         <th>没交</th>
                     </tr>
                     <tr v-for="i in none">
-                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer;">{{i}}</td>
+                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer">
+                            {{i}}
+                        </td>
                     </tr>
                 </table>
                 <table>
@@ -71,7 +73,9 @@
                         <th>多交</th>
                     </tr>
                     <tr v-for="i in remain">
-                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer;">{{i}}</td>
+                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer">
+                            {{i}}
+                        </td>
                     </tr>
                 </table>
                 <table>
@@ -79,7 +83,9 @@
                         <th>未知</th>
                     </tr>
                     <tr v-for="i in unknow">
-                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer;">{{i}}</td>
+                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer">
+                            {{i}}
+                        </td>
                     </tr>
                 </table>
             </td>
@@ -87,7 +93,13 @@
 
         <tr>
             <td>
-                <div @click="submit" class="button submit">改名</div>
+                <div @click="submit" class="button submit" v-if="flag==0">改名</div>
+                <div @click="submit" class="button submit" style="background-color: rgb(255, 10, 31)" v-if="flag==1">
+                    恢复
+                </div>
+                <div @click="backup" class="button submit" v-if="flag==0">
+                    备份并改名
+                </div>
                 <div @click="back" class="button">返回</div>
             </td>
         </tr>
@@ -102,6 +114,7 @@
                     none: [],
                     remain: [],
                     mes: "",
+                    flag: 0,
                 };
             },
             methods: {
@@ -117,6 +130,7 @@
                         map = res.data["map"];
                         new_list = res.data["new"];
                         old_list = res.data["old"];
+                        this.flag = res.data["flag"];
                         for (i in this.range(0, map.length)) {
                             if (map[i] == 0) {
                                 this.none.push(new_list[i]); //没交的
@@ -151,9 +165,40 @@
                     document.body.removeChild(input);
                 },
                 submit() {
-                    axios.post("Rename").then((res) => {
+                    if (this.flag == 0) {
+                        axios.post("Rename").then((res) => {
+                            if (res.data["code"] == 0) {
+                                notify(res.data["msg"], "success");
+                                this.flag = !this.flag;
+                            } else {
+                                notify(res.data["msg"], "error");
+                            }
+                        });
+                    } else {
+                        axios.post("Recover").then((res) => {
+                            if (res.data["code"] == 0) {
+                                notify(res.data["msg"], "success");
+                                this.flag = !this.flag;
+                            } else {
+                                notify(res.data["msg"], "error");
+                            }
+                        });
+                    }
+                },
+                backup() {
+                    notify("开始备份，请耐心等待", "success");
+                    axios.post("Backup").then((res) => {
                         if (res.data["code"] == 0) {
                             notify(res.data["msg"], "success");
+                            notify("开始改名", "success");
+                            axios.post("Rename").then((res) => {
+                                if (res.data["code"] == 0) {
+                                    notify(res.data["msg"], "success");
+                                    this.flag = 1;
+                                } else {
+                                    notify(res.data["msg"], "error");
+                                }
+                            });
                         } else {
                             notify(res.data["msg"], "error");
                         }

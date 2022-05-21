@@ -28,7 +28,14 @@
     <table id="body">
         <tr>
             <td>
-                <input type="text" v-model="message" placeholder="请输入excel文件路径" autofocus/>
+                <div class="tip">
+                    请按住"shift"键，并右键点击excel文件，选择"复制为路径"或者"复制文件地址"
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" v-model="message" placeholder="请输入excel文件路径" autofocus />
             </td>
         </tr>
         <tr>

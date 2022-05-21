@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, redirect
 from datetime import timedelta
 from gevent import pywsgi
-import webbrowser, json, openpyxl, os, re
+import webbrowser, json, openpyxl, os, re, time, shutil
 
 app = Flask(__name__, static_url_path="")
 app.debug = False
@@ -10,7 +10,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.5.1"
+VERSION = "v2.6.0"
 
 
 class Excel_List:
@@ -406,6 +406,60 @@ def Rename():
         return jsonify({"code": 0, "msg": "改名成功"})
 
 
+@app.route("/Recover", methods=["post"])
+def Recover():
+    '''
+    发起恢复的请求
+    
+    返回值：
+    
+    0：恢复成功
+
+    1: 尚未进行重命名
+    '''
+    if execute["flag"]:
+        the_repeat_name = []
+        for i in execute["list"]:
+            try:
+                os.rename(i["new"], i["old"])
+            except FileExistsError:
+                the_repeat_name.append(i)
+        for i in the_repeat_name:
+            os.rename(i["old"], i["new"])
+        execute["flag"] = 0
+        return jsonify({"code": 0, "msg": "恢复成功"})
+    else:
+        return jsonify({"code": 1, "msg": "尚未进行重命名"})
+
+
+@app.route("/Backup", methods=["post"])
+def Backup():
+    '''
+    发起恢复的请求
+    
+    返回值：
+    
+    0：恢复成功
+
+    1: 已经改过名字了
+
+    2：目录已存在
+    '''
+    if execute["flag"]:
+        return jsonify({"code": 1, "msg": "已经改名请先恢复再备份"})
+    else:
+        t = time.time()
+        name = time.strftime("%Y年%m月%d日 %H时%M分%S",
+                             time.localtime(t)) + str(t - int(t))[1:5] + "秒 备份"
+        try:
+            os.mkdir(name)
+        except FileExistsError:
+            return jsonify({"code": 2, "msg": "目录已存在，请重试"})
+        for i in execute["old"]:
+            shutil.copy(i, name)
+        return jsonify({"code": 0, "msg": "备份成功"})
+
+
 @app.route("/GetData", methods=["post"])
 def get_data():
     '''
@@ -437,7 +491,8 @@ def get_execute():
         "map": execute["map"],
         "list": execute["list"],
         "new": execute["new"],
-        "old": execute["old"]
+        "old": execute["old"],
+        "flag": execute["flag"]
     })
 
 
@@ -459,7 +514,7 @@ if __name__ == "__main__":
     except (FileNotFoundError, json.decoder.JSONDecodeError):
         config = {"data": []}
         write_json("config.json", config)
-    execute = {}
+    execute = {"flag": 0}
     # execute各项解释
     # flag：是否使用过，1为使用过，0为未使用
     # path：要操作的目录
