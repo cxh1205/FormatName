@@ -2,13 +2,13 @@
 <html lang="zh-cn">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache" />
     <script src="vue.global.prod.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="favicon.ico" />
     <title>更新日志</title>
     <style>
         .contain {
@@ -31,9 +31,9 @@
 
 <body>
     <header class="page-head">
-        <div class="title" onclick="window.location.href = window.location.origin">Format Name</div>
-        <div class="compass"><a
-                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+        <a class="title" href="/">Format Name</a>
+        <div class="compass">
+            <a href="https://gitee.com/cxh1205/FormatName/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
                 target="_blank">使用手册</a>
         </div>
     </header>
@@ -54,9 +54,8 @@
                             <li v-for="l in d.issue">{{l}}</li>
                         </ol>
                     </div>
-                    <br><br>
+                    <br /><br />
                 </div>
-
             </td>
         </tr>
     </table>
@@ -65,11 +64,11 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    data: update
-                }
-            }
-        })
-        const vm = app.mount('#body');
+                    data: update,
+                };
+            },
+        });
+        const vm = app.mount("#body");
     </script>
 </body>
 

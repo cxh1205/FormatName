@@ -2,18 +2,18 @@
 <html lang="zh-cn">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache" />
     <script src="vue.global.prod.js"></script>
     <script src="axios.min.js"></script>
     <script src="noty.min.js"></script>
     <script src="index.js"></script>
-    <link rel="stylesheet" href="noty.css">
-    <link rel="stylesheet" href="mint.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="noty.css" />
+    <link rel="stylesheet" href="mint.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="favicon.ico" />
     <title>选取命名格式</title>
     <style>
         .bold {
@@ -32,7 +32,7 @@
             background-color: #ffffff;
             border: 1px solid var(--color);
             text-indent: 2px;
-            line-height: .65;
+            line-height: 0.65;
             padding: 3px;
         }
 
@@ -60,14 +60,14 @@
             /*不换行空格*/
             color: #ffffff;
             display: inline-block;
-            vertical-align: .2em;
+            vertical-align: 0.2em;
             width: 1em;
             height: 1em;
-            margin-right: .2em;
-            border-radius: .2em;
+            margin-right: 0.2em;
+            border-radius: 0.2em;
             background-color: silver;
-            text-indent: .15em;
-            line-height: .55;
+            text-indent: 0.15em;
+            line-height: 0.55;
             /*行高不加单位，子元素将继承数字乘以自身字体尺寸而非父元素行高*/
         }
 
@@ -76,7 +76,9 @@
             clip: rect(0, 0, 0, 0);
         }
 
-
+        label{
+            cursor: pointer;
+        }
 
         .sep-contain {
             opacity: 0;
@@ -98,9 +100,9 @@
 
 <body>
     <header class="page-head">
-        <div class="title" onclick="window.location.href = window.location.origin + '/log'">Format Name</div>
-        <div class="compass"><a
-                href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+        <a class="title" href="/log">Format Name</a>
+        <div class="compass">
+            <a href="https://gitee.com/cxh1205/FormatName/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
                 target="_blank">使用手册</a>
         </div>
     </header>
@@ -112,11 +114,11 @@
         </tr>
         <tr>
             <td>
-                <hr>
+                <hr />
                 <table>
                     <tr>
                         <td v-for="(i,index) in picked">
-                            <div v-if="index%2==0" style="min-height: 87px;">
+                            <div v-if="index%2==0" style="min-height: 87px">
                                 <div v-for="key in keys">
                                     <input type="radio" :id="key+index" :value.number="keys.indexOf(key)"
                                         v-model="picked[index]" class="radio" />
@@ -124,7 +126,7 @@
                                     <br />
                                 </div>
                                 <div>
-                                    <input style="width: 5em;" v-model="picked[index]" />
+                                    <input style="width: 5em" v-model="picked[index]" />
                                     <br />
                                 </div>
                             </div>
@@ -142,7 +144,7 @@
                                 <label :for="'kongge'+index">空格</label>
                                 <br />
                                 <div>
-                                    <input style="width: 50px;" v-model="picked[index]" />
+                                    <input style="width: 50px" v-model="picked[index]" />
                                     <br />
                                 </div>
                             </div>
@@ -160,40 +162,39 @@
         <tr>
             <td>
                 <div>
-                    <hr>
+                    <hr />
                     <input type="checkbox" v-model="same" id="same" />
                     <label for="same" class="bold">统一分隔符</label>
                     <span v-show="same">
-                        <label class="bold">为：&nbsp;</label>
+                        <label for="same" class="bold">为：&nbsp;</label>
                         <input type="radio" id="kongbai" value="" v-model="sep" class="radio" />
                         <label for="kongbai">无&nbsp;</label>
                         <input type="radio" id="hengxian" value="-" v-model="sep" class="radio" />
                         <label for="hengxian">&nbsp;-&nbsp;&nbsp;</label>
                         <input type="radio" id="kongge" value=" " v-model="sep" class="radio" />
                         <label for="kongge">空格&nbsp;&nbsp;或自定义为</label>
-                        <input style="width: 2em;" v-model="sep" />
+                        <input style="width: 2em" v-model="sep" />
                     </span>
-
                 </div>
             </td>
         </tr>
         <tr>
             <td>
-                <hr>
+                <hr />
                 <label class="bold">格式：</label>
-                <div class="raw" style="display: inline;">{{return_format}}</div>
+                <div class="raw" style="display: inline">{{return_format}}</div>
             </td>
         </tr>
         <tr>
             <td>
                 <label class="bold">样例：</label>
-                <div class="raw" style="display: inline;">{{return_example}}</div>
+                <div class="raw" style="display: inline">{{return_example}}</div>
             </td>
         </tr>
         <tr>
             <td>
-                <hr>
-                <input type="text" placeholder="请输入包含重命名文件的文件夹路径" v-model="path">
+                <hr />
+                <input type="text" placeholder="请输入包含重命名文件的文件夹路径" v-model="path" />
             </td>
         </tr>
         <tr>
@@ -201,7 +202,6 @@
                 <div @click="submit" class="button submit">提交</div>
             </td>
         </tr>
-
     </table>
 
     <script>
@@ -210,56 +210,58 @@
                 return {
                     keys: [],
                     examples: [],
-                    sep: '',
-                    picked: [0, '', 0],
+                    sep: "",
+                    picked: [0, "", 0],
                     path: "",
                     same: true,
-                }
+                };
             },
             methods: {
                 range(start, stop, step = 1) {
-                    return Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
+                    return Array(Math.ceil((stop - start) / step))
+                        .fill(start)
+                        .map((x, y) => x + y * step);
                 },
                 get_data() {
-                    axios.post("GetData")
-                        .then((res) => {
-                            var data = res.data;
-                            let keys = [];
-                            let examples = [];
-                            for (i in data) {
-                                keys.push(data[i]['key'])
-                                examples.push(data[i]['values'][0])
-                            }
-                            this.keys = keys;
-                            this.examples = examples;
-                        })
+                    axios.post("GetData").then((res) => {
+                        var data = res.data;
+                        let keys = [];
+                        let examples = [];
+                        for (i in data) {
+                            keys.push(data[i]["key"]);
+                            examples.push(data[i]["values"][0]);
+                        }
+                        this.keys = keys;
+                        this.examples = examples;
+                    });
                 },
                 submit() {
-                    axios.post('SubmitExecute', {
-                        "path": this.path.replace(/\\/g, "/"),
-                        "execute": this.picked
-                    }).then((res) => {
-                        console.log(res.data)
+                    axios
+                        .post("SubmitExecute", {
+                            path: this.path.replace(/\\/g, "/"),
+                            execute: this.picked,
+                        })
+                        .then((res) => {
+                            console.log(res.data);
 
-                        if (res.data['code'] == 0) {
-                            notify(res.data['msg'], 'success')
-                            setTimeout(() => {
-                                window.location.href = window.location.origin + "/Analysis"
-                            }, 1000)
-                        } else {
-                            notify(res.data['msg'], 'error')
-                        }
-
-                    })
+                            if (res.data["code"] == 0) {
+                                notify(res.data["msg"], "success");
+                                setTimeout(() => {
+                                    document.location.href = "/Analysis";
+                                }, 1000);
+                            } else {
+                                notify(res.data["msg"], "error");
+                            }
+                        });
                 },
                 reset() {
-                    window.location.href = window.location.origin + "/GetExcel"
+                    document.location.href = "/GetExcel";
                 },
                 increse() {
                     if (this.picked.length > 12) {
-                        notify('哥，不至于！', 'warning')
+                        notify("哥，不至于！", "warning");
                     } else {
-                        this.picked.push(this.sep, 0)
+                        this.picked.push(this.sep, 0);
                     }
                 },
                 decrese() {
@@ -268,14 +270,17 @@
                     }
                 },
                 get_newest() {
-                    axios.get('https://gitee.com/cxh1205/format-name/raw/master/update.json')
+                    axios
+                        .get(
+                            "https://gitee.com/cxh1205/format-name/raw/master/update.json"
+                        )
                         .then((res) => {
-                            console.log(res.data)
-                        })
-                }
+                            console.log(res.data);
+                        });
+                },
             },
             created() {
-                this.get_data()
+                this.get_data();
                 // this.get_newest()
             },
             watch: {
@@ -290,32 +295,31 @@
                             this.picked[i] = this.sep;
                         }
                     }
-                }
+                },
             },
             computed: {
                 return_format() {
                     let text = [];
                     for (let i = 0; i < this.picked.length; i++) {
                         let item = this.picked[i];
-                        text.push(this.keys[item] ? this.keys[item] : item)
+                        text.push(this.keys[item] ? this.keys[item] : item);
                     }
-                    text.push(".xxx")
-                    return text.join("")
+                    text.push(".xxx");
+                    return text.join("");
                 },
                 return_example() {
                     let text = [];
                     for (let i = 0; i < this.picked.length; i++) {
                         let item = this.picked[i];
-                        text.push(this.examples[item] ? this.examples[item] : item)
+                        text.push(this.examples[item] ? this.examples[item] : item);
                     }
-                    text.push(".xxx")
-                    return text.join("")
-                }
-            }
-        })
-        const vm = app.mount('#body');
+                    text.push(".xxx");
+                    return text.join("");
+                },
+            },
+        });
+        const vm = app.mount("#body");
     </script>
-
 </body>
 
 </html>

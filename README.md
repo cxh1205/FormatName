@@ -4,6 +4,8 @@
 
 [github下载地址](https://github.com/cxh1205/FormatName/releases/latest)
 
+[不允许下载使用？](#unable)
+
 ## 功能
 
 通过excel花名册名单，对上交的作业进行固定格式的重命名
@@ -37,6 +39,8 @@
 
 1. <p style="color:red">目前仅支持以 **(.xlsx)(.xlsm)(.xltx)(.xltm)** 为后缀名文件</p>
 2. <p style="color:red">本程序不应该和要改名的文件放在一个文件夹里</p>
+
+
 
 <details>
 <summary>
@@ -102,3 +106,17 @@ excel路径获取方式：
 
 </details>
 
+<details open>
+<summary>
+<strong id="unable">不允许下载？</strong>
+</summary>
+
+1. 点击 **···** 选择**保留**
+![5](image/5.png)
+
+2. 选择**显示简略信息**，点击**仍然保留**
+![6](image/6.png)
+
+3. 打开时提示蓝框？点击**详细信息**，再点击**仍要运行**
+![7](image/7.png)
+</details>

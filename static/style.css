@@ -13,7 +13,7 @@ html {
 }
 
 .page-head {
-    padding: 2% 5%;
+    padding: 0.25em 5%;
     width: 90%;
     background: var(--color);
     color: #ffffff;
@@ -24,6 +24,8 @@ html {
 
 .page-head>.title {
     float: left;
+    color: white;
+    text-decoration: none;
 }
 
 .page-head>.compass {
@@ -43,6 +45,7 @@ html {
     border-radius: 2em;
     font-weight: bold;
     text-align: center;
+    cursor: pointer;
 }
 
 #body {
@@ -78,7 +81,7 @@ input[type="text"] {
     padding: 0 1em;
     border-radius: 2em;
     border: 2px solid var(--color);
-    margin: 2%;
+    margin: 0.25em 2%;
 }
 
 .tip {

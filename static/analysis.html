@@ -25,11 +25,9 @@
 
 <body>
     <header class="page-head">
-        <div class="title" onclick="window.location.href = window.location.origin + '/log'">
-            Format Name
-        </div>
+        <a class="title" href="/log">Format Name</a>
         <div class="compass">
-            <a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+            <a href="https://gitee.com/cxh1205/FormatName/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
                 target="_blank">使用手册</a>
         </div>
     </header>
@@ -65,7 +63,7 @@
                         <th>没交</th>
                     </tr>
                     <tr v-for="i in none">
-                        <td @click="mes=i;copy()" class="raw">{{i}}</td>
+                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer;">{{i}}</td>
                     </tr>
                 </table>
                 <table>
@@ -73,7 +71,7 @@
                         <th>多交</th>
                     </tr>
                     <tr v-for="i in remain">
-                        <td @click="mes=i;copy()" class="raw">{{i}}</td>
+                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer;">{{i}}</td>
                     </tr>
                 </table>
                 <table>
@@ -81,7 +79,7 @@
                         <th>未知</th>
                     </tr>
                     <tr v-for="i in unknow">
-                        <td @click="mes=i;copy()" class="raw">{{i}}</td>
+                        <td @click="mes=i;copy()" class="raw" style="cursor: pointer;">{{i}}</td>
                     </tr>
                 </table>
             </td>
@@ -126,11 +124,11 @@
                                 this.remain.push(new_list[i]); //多交的
                             }
                         }
-                        for(i in this.list){
-                            old_list[old_list.indexOf(this.list[i]['old'])]=null;//原本名字里有的改成null
+                        for (i in this.list) {
+                            old_list[old_list.indexOf(this.list[i]["old"])] = null; //原本名字里有的改成null
                         }
-                        for (i in old_list){
-                            if(old_list[i]){
+                        for (i in old_list) {
+                            if (old_list[i]) {
                                 this.unknow.push(old_list[i]);
                             }
                         }

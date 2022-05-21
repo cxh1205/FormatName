@@ -2,18 +2,18 @@
 <html lang="zh-cn">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="pragma" content="no-cache" />
 	<script src="vue.global.prod.js"></script>
 	<script src="axios.min.js"></script>
 	<script src="noty.min.js"></script>
 	<script src="index.js"></script>
-	<link rel="stylesheet" href="noty.css">
-	<link rel="stylesheet" href="mint.css">
-	<link rel="stylesheet" href="style.css">
-	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="noty.css" />
+	<link rel="stylesheet" href="mint.css" />
+	<link rel="stylesheet" href="style.css" />
+	<link rel="shortcut icon" href="favicon.ico" />
 	<style>
 		.yes {
 			background-color: #602f88;
@@ -24,6 +24,7 @@
 		table table th {
 			background-color: #f9f1ff;
 			transition: 0.2s;
+			cursor: pointer;
 		}
 
 		td th,
@@ -36,11 +37,9 @@
 
 <body>
 	<header class="page-head">
-		<div class="title" onclick="window.location.href = window.location.origin + '/log'">
-			Format Name
-		</div>
+		<a class="title" href="/log">Format Name</a>
 		<div class="compass">
-			<a href="https://gitee.com/Jim-Tom/format-name/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
+			<a href="https://gitee.com/cxh1205/FormatName/blob/master/README.md#%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C"
 				target="_blank">使用手册</a>
 		</div>
 	</header>
@@ -103,16 +102,16 @@
 						if (this.data[i]["isKeyWord"]) break;
 					}
 					if (i == this.data.length) {
-						notify("请至少选择一个关键字", 'error')
+						notify("请至少选择一个关键字", "error");
 					} else {
 						axios.post("SubmitData", this.data).then((res) => {
-							if (res.data['code'] == 0) {
-								notify(res.data['msg'], 'success')
+							if (res.data["code"] == 0) {
+								notify(res.data["msg"], "success");
 								setTimeout(() => {
-									window.location.href = window.location.origin + "/"
-								}, 1000)
+									document.location.href = "/";
+								}, 1000);
 							} else {
-								notify(res.data['msg'], 'error')
+								notify(res.data["msg"], "error");
 							}
 						});
 					}
