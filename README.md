@@ -1,6 +1,6 @@
 # 格式化命名（Format Name）
 
-[gitee下载地址（快速）](https://gitee.com/cxh1205/FormatName/releases/v2.4.0)
+[gitee下载地址（快速）](https://gitee.com/cxh1205/FormatName/releases/v2.5.0)
 
 [github下载地址](https://github.com/cxh1205/FormatName/releases/latest)
 
