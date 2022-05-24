@@ -191,14 +191,7 @@
                         if (res.data["code"] == 0) {
                             notify(res.data["msg"], "success");
                             notify("开始改名", "success");
-                            axios.post("Rename").then((res) => {
-                                if (res.data["code"] == 0) {
-                                    notify(res.data["msg"], "success");
-                                    this.flag = 1;
-                                } else {
-                                    notify(res.data["msg"], "error");
-                                }
-                            });
+                            this.submit();
                         } else {
                             notify(res.data["msg"], "error");
                         }

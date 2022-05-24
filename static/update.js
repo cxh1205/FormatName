@@ -1,4 +1,13 @@
 var update = [{
+    "version": "v2.6.1",
+    "data": [
+        "增加视频教程"
+    ],
+    "issue": [
+        "暂未发现问题，欢迎提出issue",
+    ]
+},
+{
     "version": "v2.6.0",
     "data": [
         "增加恢复改名",
