@@ -90,6 +90,8 @@
 				get_data() {
 					axios.post("GetData").then((res) => {
 						this.data = res.data;
+					}).catch((res) => {
+						notify("未知错误，请复制黑色窗口中最后一行的报错发给作者寻找原因", "error");
 					});
 				},
 				range(start, stop, step = 1) {
@@ -113,6 +115,8 @@
 							} else {
 								notify(res.data["msg"], "error");
 							}
+						}).catch((res) => {
+							notify("未知错误，请复制黑色窗口中最后一行的报错发给作者寻找原因", "error");
 						});
 					}
 				},

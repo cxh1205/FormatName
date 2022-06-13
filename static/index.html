@@ -240,6 +240,8 @@
                         }
                         this.keys = keys;
                         this.examples = examples;
+                    }).catch((res) => {
+                        notify("未知错误，请复制黑色窗口中最后一行的报错发给作者寻找原因", "error");
                     });
                 },
                 submit() {
@@ -259,6 +261,8 @@
                             } else {
                                 notify(res.data["msg"], "error");
                             }
+                        }).catch((res) => {
+                            notify("未知错误，请复制黑色窗口中最后一行的报错发给作者寻找原因", "error");
                         });
                 },
                 reset() {
@@ -283,6 +287,8 @@
                         )
                         .then((res) => {
                             console.log(res.data);
+                        }).catch((res) => {
+                            notify("未知错误，请复制黑色窗口中最后一行的报错发给作者寻找原因", "error");
                         });
                 },
             },
