@@ -10,7 +10,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.6.2"
+VERSION = "v2.6.3"
 
 
 class Excel_List:
@@ -372,7 +372,8 @@ def return_last_name(file_name):
     '''
     确定后缀名
     '''
-    return re.findall(r"\.[^\.]+$", file_name)[0]
+    last_name = re.findall(r"\.[^\.]*$", file_name)
+    return last_name[0] if last_name else ''
 
 
 @app.route("/Rename", methods=["post"])
