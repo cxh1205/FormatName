@@ -10,7 +10,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)
 HOST_PAGE = "http://localhost:40115"
 HOST = "127.0.0.1"
 PORT = 40115
-VERSION = "v2.6.3"
+VERSION = "v2.6.4"
 
 
 class Excel_List:
@@ -91,21 +91,22 @@ class Excel_List:
         ['delta']该关键字的重复次数，用于给关键字排序
         '''
         col = {}
-        col["key"] = self.sheet.cell(self.first_line,
-                                     col_num).value  # 关键字是该列的第一行
+        col["key"] = str(self.sheet.cell(self.first_line,
+                                     col_num).value)  # 关键字是该列的第一行
         col["values"] = [
-            self.sheet.cell(i, col_num).value
+            str(self.sheet.cell(i, col_num).value)
             for i in range(self.first_line + 1, self.last_line + 1)
         ]  # 表里的值是表格除了标题以外的东西
+    
+        col["isKeyWord"] = True
+        col["display"] = True
+        col["reason"] = "该项适合做关键字"
 
         #判断表格值是否包含重复项
         col["delta"] = len(col["values"]) - len(set(col["values"]))
         if col["delta"] > 2:
             col["isKeyWord"] = False
             col["reason"] = "该项不适合做关键字，因为至少有%d个重复项" % col["delta"]
-        else:
-            col["isKeyWord"] = True
-            col["reason"] = "该项适合做关键字"
 
         #判断表格值是否为序号
         try:
@@ -115,6 +116,15 @@ class Excel_List:
                 col["reason"] = "该项可能是序号，不适合做关键字"
         except (ValueError, TypeError):
             pass
+
+        #判断这一项是否包含非法字符
+        for _ in col['values']:
+            if re.search(r'[|><?*":\\/]', _):
+                col["isKeyWord"] = False
+                col["display"] = False
+                col["reason"] = "该项包含不符合文件名规定的字符|><?*\":\\/，无法作为关键字"
+                break
+
         return col
 
     def return_excel_data(self):  # 构成关键字表格
@@ -303,6 +313,10 @@ def submit_execute():
             execute.update(a)
             execute["flag"] = 0
             return_old_and_new_name_compare()
+            # 查询是否新名字中包含非法字符
+            for _ in execute["new"]:
+                if re.search(r'[|><?*":\\/]', _):
+                    return jsonify({"code": 5, "msg": "新文件名中会包含不允许使用的字符"})
             return jsonify({"code": 0, "msg": "提交成功"})
         else:
             return jsonify({"code": 2, "msg": "提交失败，请提交一个目录而非文件"})

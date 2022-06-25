@@ -235,7 +235,7 @@
                         let keys = [];
                         let examples = [];
                         for (i in data) {
-                            keys.push(data[i]["key"]);
+                            keys.push(data[i]["key"]+(data[i]["display"]?'':'（有非法字符）'));
                             examples.push(data[i]["values"][0]);
                         }
                         this.keys = keys;
